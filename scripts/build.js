@@ -18,6 +18,7 @@ const metadata = `// ==UserScript==
 // @grant        GM_setValue
 // @grant        GM_deleteValue
 // @grant        GM_addStyle
+// @grant        GM_registerMenuCommand
 // ==/UserScript==`;
 
 async function main() {

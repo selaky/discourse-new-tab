@@ -1,7 +1,7 @@
 ﻿import { evaluateActivation } from './core/forumDetector';
 import { configManager } from './core/config';
 import { setupLinkHandler } from './core/linkHandler';
-import { initSettingsPanel } from './ui/settingsPanel';
+import { initSettingsPanel, openSettings } from './ui/settingsPanel';
 
 function runWhenReady(callback: () => void): void {
   if (document.readyState === 'loading') {
@@ -21,6 +21,11 @@ function bootstrap(): void {
 
   setupLinkHandler();
   initSettingsPanel({ configManager, activation, host: hostname });
+
+  // 注册油猴菜单命令
+  if (typeof GM_registerMenuCommand !== 'undefined') {
+    GM_registerMenuCommand('打开设置面板', openSettings);
+  }
 }
 
 runWhenReady(bootstrap);

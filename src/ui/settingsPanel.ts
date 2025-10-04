@@ -12,28 +12,12 @@ interface InitOptions {
 }
 
 const STYLE = `
-#dnt-settings-toggle {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
-  z-index: 2147483000;
-  background: #5662f6;
-  color: #fff;
-  border: none;
-  border-radius: 999px;
-  padding: 10px 18px;
-  font-size: 13px;
-  cursor: pointer;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
-#dnt-settings-toggle:hover {
-  background: #3f4de6;
-}
 .dnt-overlay {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(15, 25, 45, 0.55);
+  background: rgba(15, 25, 45, 0.6);
+  backdrop-filter: blur(4px);
   z-index: 2147482999;
   align-items: center;
   justify-content: center;
@@ -45,177 +29,230 @@ const STYLE = `
 .dnt-panel {
   background: #fff;
   color: #1b1d24;
-  width: 360px;
+  width: 580px;
   max-width: 100%;
-  max-height: 85vh;
-  border-radius: 14px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  max-height: 90vh;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 .dnt-panel__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 18px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: linear-gradient(to bottom, #fafbff, #fff);
 }
 .dnt-panel__header h2 {
   margin: 0;
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1b1d24;
 }
 .dnt-panel__close {
   background: transparent;
   border: none;
-  font-size: 18px;
+  font-size: 24px;
   cursor: pointer;
-  color: #555;
+  color: #888;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dnt-panel__close:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #333;
 }
 .dnt-panel__content {
-  padding: 16px 18px 20px;
+  padding: 24px;
   overflow-y: auto;
   flex: 1;
 }
 .dnt-section + .dnt-section {
-  margin-top: 18px;
+  margin-top: 28px;
 }
 .dnt-section h3 {
-  margin: 0 0 10px;
-  font-size: 14px;
+  margin: 0 0 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2c2e33;
 }
 .dnt-rule-item {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: 12px;
+  padding: 12px 0;
+}
+.dnt-rule-item input[type="checkbox"] {
+  margin-top: 2px;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
 }
 .dnt-rule-item label {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2c2e33;
+  cursor: pointer;
+  flex: 1;
+  line-height: 1.6;
 }
 .dnt-rule-item span {
-  font-size: 12px;
-  color: #5f6272;
+  font-size: 13px;
+  color: #6b7280;
   display: block;
+  font-weight: 400;
+  margin-top: 2px;
 }
 .dnt-lists {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 20px;
 }
 .dnt-list-block {
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 10px;
-  padding: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  background: #fafbfc;
 }
 .dnt-list-block header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+.dnt-list-block header span {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c2e33;
+}
+.dnt-list-block header small {
+  font-size: 12px;
+  color: #6b7280;
 }
 .dnt-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  max-height: 120px;
+  max-height: 160px;
   overflow-y: auto;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 .dnt-list li {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
-  padding: 6px 0;
-  border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+  font-size: 13px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 .dnt-list li:last-child {
   border-bottom: none;
+}
+.dnt-list li span {
+  color: #2c2e33;
+  word-break: break-all;
 }
 .dnt-list button {
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #4453d8;
+  color: #5662f6;
   font-size: 12px;
-  padding: 0 4px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+.dnt-list button:hover {
+  background: rgba(86, 98, 246, 0.1);
+  color: #3f4de6;
 }
 .dnt-list-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 .dnt-add-form {
   display: flex;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 .dnt-add-form input {
   flex: 1;
-  padding: 6px 8px;
-  font-size: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.dnt-add-form input:focus {
+  border-color: #5662f6;
 }
 .dnt-add-form button {
-  padding: 6px 10px;
-  font-size: 12px;
-  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 .dnt-add {
-  background: #4453d8;
+  background: #5662f6;
   color: #fff;
 }
+.dnt-add:hover {
+  background: #3f4de6;
+}
 .dnt-cancel {
-  background: #dadff5;
-  color: #323968;
+  background: #e5e7eb;
+  color: #4b5563;
+}
+.dnt-cancel:hover {
+  background: #d1d5db;
 }
 .dnt-status {
-  font-size: 12px;
-  border-radius: 8px;
-  padding: 10px 12px;
-  background: #f4f7ff;
-  color: #36417e;\n  line-height: 1.5;\n  white-space: pre-line;\n}
+  font-size: 13px;
+  border-radius: 10px;
+  padding: 14px 16px;
+  background: #f0f4ff;
+  color: #374151;
+  line-height: 1.7;
+  white-space: pre-line;
+  border-left: 3px solid #5662f6;
+}
 `; // end STYLE
 
-const RULE_TEXT: Record<keyof RuleSwitches, { label: string; hint: string }> = {
-  enableTopicNewTab: {
-    label: '帖子相关统一用新标签打开',
-    hint: '页面或链接任一属于帖子时，在新标签页打开'
-  },
-  keepSameTopicInTab: {
-    label: '同帖内部跳转保持当前标签',
-    hint: '相同帖子内的楼层跳转不改变窗口'
-  },
-  keepNonTopicDefault: {
-    label: '非帖子页面维持网站默认',
-    hint: '分类、用户等非帖子页面使用默认行为'
-  },
-  skipAttachments: {
-    label: '附件类链接不改写',
-    hint: '图片、压缩包等附件使用默认下载/预览'
-  },
-  skipPopupLike: {
-    label: '弹窗行为不变更',
-    hint: '按钮式或弹窗链接保持原始交互'
-  }
+const RULE_TEXT: Record<keyof RuleSwitches, string> = {
+  enableTopicNewTab: '新标签页打开主题帖',
+  keepSameTopicInTab: '在原标签页进行楼层跳转',
+  keepNonTopicDefault: '非主题帖页面保留默认打开方式',
+  skipAttachments: '附件类保留默认打开方式',
+  skipPopupLike: '按钮、弹窗保留默认打开方式'
 };
 
+let panelInitialized = false;
+let openPanelFn: (() => void) | null = null;
+
 export function initSettingsPanel(options: InitOptions): void {
-  if (document.getElementById('dnt-settings-toggle')) {
+  if (panelInitialized) {
     return;
   }
+  panelInitialized = true;
 
   const { configManager, activation, host } = options;
 
   injectStyles(STYLE);
-
-  const toggleButton = document.createElement('button');
-  toggleButton.id = 'dnt-settings-toggle';
-  toggleButton.type = 'button';
-  toggleButton.textContent = 'Discourse 新标签设置';
 
   const overlay = document.createElement('div');
   overlay.className = 'dnt-overlay';
@@ -227,7 +264,7 @@ export function initSettingsPanel(options: InitOptions): void {
   header.className = 'dnt-panel__header';
 
   const title = document.createElement('h2');
-  title.textContent = '新标签页偏好设置';
+  title.textContent = 'Discourse 新标签设置';
   header.appendChild(title);
 
   const closeButton = document.createElement('button');
@@ -247,26 +284,25 @@ export function initSettingsPanel(options: InitOptions): void {
   const rulesSection = document.createElement('section');
   rulesSection.className = 'dnt-section';
   const rulesTitle = document.createElement('h3');
-  rulesTitle.textContent = '规则开关';
+  rulesTitle.textContent = '判断规则';
   rulesSection.appendChild(rulesTitle);
   const rulesContainer = document.createElement('div');
   rulesSection.appendChild(rulesContainer);
-  content.appendChild(rulesSection);
 
   const listsSection = document.createElement('section');
   listsSection.className = 'dnt-section';
   const listsTitle = document.createElement('h3');
-  listsTitle.textContent = '白名单与黑名单';
+  listsTitle.textContent = '域名控制';
   listsSection.appendChild(listsTitle);
   const listsWrapper = document.createElement('div');
   listsWrapper.className = 'dnt-lists';
   listsSection.appendChild(listsWrapper);
   content.appendChild(listsSection);
+  content.appendChild(rulesSection);
 
   panel.appendChild(header);
   panel.appendChild(content);
   overlay.appendChild(panel);
-  document.body.appendChild(toggleButton);
   document.body.appendChild(overlay);
 
   const checkboxMap = new Map<keyof RuleSwitches, HTMLInputElement>();
@@ -319,11 +355,7 @@ export function initSettingsPanel(options: InitOptions): void {
 
       const label = document.createElement('label');
       label.setAttribute('for', checkbox.id);
-      label.textContent = RULE_TEXT[key].label;
-
-      const hint = document.createElement('span');
-      hint.textContent = RULE_TEXT[key].hint;
-      label.appendChild(hint);
+      label.textContent = RULE_TEXT[key];
 
       row.appendChild(checkbox);
       row.appendChild(label);
@@ -389,7 +421,7 @@ export function initSettingsPanel(options: InitOptions): void {
 
     const input = listInputs[type];
     input.type = 'text';
-    input.placeholder = '例如: meta.appinn.net';
+    input.placeholder = '输入域名，如: meta.appinn.net';
     form.appendChild(input);
 
     const submitButton = listActions[type].submit;
@@ -435,7 +467,8 @@ export function initSettingsPanel(options: InitOptions): void {
 
     if (!values.length) {
       const empty = document.createElement('li');
-      empty.textContent = '暂无数据';
+      empty.textContent = '（空）';
+      empty.style.color = '#9ca3af';
       list.appendChild(empty);
       return;
     }
@@ -485,20 +518,15 @@ export function initSettingsPanel(options: InitOptions): void {
   function refreshStatus(): void {
     const isWhitelisted = configManager.isWhitelisted(host);
     const isBlacklisted = configManager.isBlacklisted(host);
-    const snapshot = configManager.getSnapshot(host);
     const lines: string[] = [];
-    lines.push(`当前域名: ${host}`);
+    lines.push(`域名: ${host}`);
     if (isBlacklisted) {
-      lines.push('状态: 黑名单（脚本停用）');
+      lines.push('状态: 已禁用（黑名单）');
     } else if (isWhitelisted) {
-      lines.push('状态: 白名单（强制启用脚本）');
+      lines.push('状态: 已启用（白名单）');
     } else {
-      lines.push(`状态: ${activation.reason === 'auto-detected' ? '自动识别已启用' : '根据规则启用'}`);
+      lines.push(`状态: ${activation.reason === 'auto-detected' ? '已启用（自动检测）' : '已启用'}`);
     }
-    lines.push('规则生效概览:');
-    (Object.keys(snapshot.domainRules) as Array<keyof RuleSwitches>).forEach((key) => {
-      lines.push(`${RULE_TEXT[key].label}: ${snapshot.domainRules[key] ? '开' : '关'}`);
-    });
     statusBox.textContent = lines.join('\n');
   }
 
@@ -513,13 +541,7 @@ export function initSettingsPanel(options: InitOptions): void {
     resetEditState('blacklist');
   }
 
-  toggleButton.addEventListener('click', () => {
-    if (overlay.classList.contains('is-open')) {
-      closePanel();
-    } else {
-      openPanel();
-    }
-  });
+  openPanelFn = openPanel;
 
   closeButton.addEventListener('click', () => {
     closePanel();
@@ -531,9 +553,15 @@ export function initSettingsPanel(options: InitOptions): void {
     }
   });
 
-  listsWrapper.appendChild(buildListBlock('whitelist', '白名单', '强制启用脚本的域名'));
-  listsWrapper.appendChild(buildListBlock('blacklist', '黑名单', '屏蔽脚本的域名'));
+  listsWrapper.appendChild(buildListBlock('whitelist', '白名单', '强制启用脚本'));
+  listsWrapper.appendChild(buildListBlock('blacklist', '黑名单', '禁用脚本'));
 
   renderRules();
   refreshStatus();
+}
+
+export function openSettings(): void {
+  if (openPanelFn) {
+    openPanelFn();
+  }
 }
