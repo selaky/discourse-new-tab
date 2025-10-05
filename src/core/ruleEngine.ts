@@ -13,6 +13,12 @@ function buildContext(url: URL): PageContext {
 
 function isPopupLike(anchor: HTMLAnchorElement): boolean {
   const href = anchor.getAttribute('href') || '';
+  if (anchor.closest('.user-card')) {
+    if (!href || href === '#' || href.startsWith('#') || href.startsWith('javascript:')) {
+      return true;
+    }
+    return false;
+  }
   if (!href || href === '#' || href.startsWith('#') || href.startsWith('javascript:')) {
     return true;
   }
@@ -32,7 +38,7 @@ function isPopupLike(anchor: HTMLAnchorElement): boolean {
   if (classes.contains('trigger-user-card') || classes.contains('user-card-link') || classes.contains('mention') || classes.contains('poster-avatar')) {
     return true;
   }
-  if (anchor.closest('.topic-avatar') || anchor.closest('.user-card')) {
+  if (anchor.closest('.topic-avatar')) {
     return true;
   }
   return false;
@@ -81,6 +87,10 @@ export function evaluateLink(params: EvaluateParams): RuleDecision {
 
   if (rules.keepSameTopicInTab && sameTopic(currentCtx.topicId, targetCtx.topicId)) {
     return { openInNewTab: false, reason: 'same-topic' };
+  }
+
+  if (rules.openUserProfileInNewTab && targetCtx.kind === 'user') {
+    return { openInNewTab: true, reason: 'user-profile' };
   }
 
   const targetIsTopic = targetCtx.kind === 'topic' || Boolean(extractTopicId(targetUrl));

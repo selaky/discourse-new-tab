@@ -1,6 +1,7 @@
 ﻿export interface RuleSwitches {
   enableTopicNewTab: boolean;
   keepSameTopicInTab: boolean;
+  openUserProfileInNewTab: boolean;
   keepNonTopicDefault: boolean;
   skipAttachments: boolean;
   skipPopupLike: boolean;

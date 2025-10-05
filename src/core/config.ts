@@ -6,6 +6,7 @@ const CONFIG_VERSION = 1;
 const DEFAULT_RULES: RuleSwitches = {
   enableTopicNewTab: true,
   keepSameTopicInTab: true,
+  openUserProfileInNewTab: true,
   keepNonTopicDefault: true,
   skipAttachments: true,
   skipPopupLike: true
@@ -20,7 +21,7 @@ const DEFAULT_CONFIG: StoredConfig = {
 };
 
 function cloneRules(rules: RuleSwitches): RuleSwitches {
-  return { ...rules };
+  return { ...DEFAULT_RULES, ...rules };
 }
 
 function normaliseDomain(value: string): string {

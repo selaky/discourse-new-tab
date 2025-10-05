@@ -236,6 +236,7 @@ const STYLE = `
 const RULE_TEXT: Record<keyof RuleSwitches, string> = {
   enableTopicNewTab: '新标签页打开主题帖',
   keepSameTopicInTab: '在原标签页进行楼层跳转',
+  openUserProfileInNewTab: '新标签页打开用户主页',
   keepNonTopicDefault: '非主题帖页面保留默认打开方式',
   skipAttachments: '附件类保留默认打开方式',
   skipPopupLike: '按钮、弹窗保留默认打开方式'
