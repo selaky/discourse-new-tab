@@ -7,11 +7,11 @@ const distDir = path.resolve('dist');
 mkdirSync(distDir, { recursive: true });
 
 const metadata = `// ==UserScript==
-// @name         Discourse Smart New Tab
-// @namespace    https://github.com/yourname/discourse-new-tab
-// @version      0.1.0
-// @description  Automatically open Discourse topics in a new tab
-// @author       your-name
+// @name         Discourse 智能新标签页 - Discourse Smart New Tab
+// @namespace    https://github.com/selaky
+// @version      1.0.0
+// @description  自动识别Discourse类论坛,并更加智能地在新标签页打开主题帖.
+// @author       selaky
 // @match        *://*/*
 // @run-at       document-start
 // @grant        GM_getValue
