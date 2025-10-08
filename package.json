@@ -1,0 +1,15 @@
+{
+  "name": "discourse-new-tab",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tampermonkey userscript: open Discourse links in new tabs based on rules",
+  "type": "module",
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "dev": "node esbuild.config.mjs --watch",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\""
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.10"
+  }
+}
