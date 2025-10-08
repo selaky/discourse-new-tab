@@ -10,10 +10,14 @@ const banner = {
     + `// @name:en      Discourse New Tab\n`
     + `// @namespace    https://github.com/your-username/discourse-new-tab\n`
     + `// @version      0.1.0\n`
-    + `// @description  在 Discourse 论坛将指定链接在新标签页打开（最小可运行版本，仅打印心跳日志）\n`
+    + `// @description  在 Discourse 论坛将指定链接在新标签页打开（逐步实现中）\n`
     + `// @author       You\n`
     + `// @match        http*://*/*\n`
-    + `// @grant        none\n`
+    + `// @grant        GM_getValue\n`
+    + `// @grant        GM_setValue\n`
+    + `// @grant        GM_deleteValue\n`
+    + `// @grant        GM_listValues\n`
+    + `// @grant        GM_registerMenuCommand\n`
     + `// @run-at       document-start\n`
     + `// @license      MIT\n`
     + `// ==/UserScript==\n`,
