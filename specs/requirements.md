@@ -45,12 +45,12 @@ Tampermonkey
 **2.1 主题帖**
 *   从任意页面打开主题帖时，用新标签页打开。
 *   在主题帖内部点击其他链接时，用新标签页打开。
-*   如果目标链接与当前页面为同一主题帖（即链接内主题编号相同，通常为楼层跳转），则保留原生跳转方式（在当前页面跳转）。
+*   如果目标链接与当前页面为同一主题帖（即主题编号相同，通常为楼层跳转），则保留原生跳转方式（在当前页面跳转）。
 
 **2.2 个人主页**
 *   从任意页面打开用户个人主页时，用新标签页打开。
 *   在用户个人主页内点击其他链接时，用新标签页打开。
-*   如果目标链接与当前页面为同一用户的主页（即链接内用户名相同），则保留原生跳转方式。
+*   如果目标链接与当前页面为同一用户的主页（即用户名相同），则保留原生跳转方式。
 
 **2.3 附件**
 *   打开图片等附件时，保留原生跳转方式。
@@ -131,4 +131,6 @@ Tampermonkey
 *   `https://linux.do/u/neo/summary`
 *   `https://meta.appinn.net/t/topic/2319`
 *   `https://meta.appinn.net/u/qingwa/summary`
+*   `https://meta.appinn.net/u/qingwa/activity`
+*   `https://meta.appinn.net/u/qingwa/follow/following`
 *   `https://blenderartists.org/t/faq-work-in-progress/1276424`

@@ -8,6 +8,8 @@ import {
   removeFromBlacklist,
   removeFromWhitelist,
 } from './storage/domainLists';
+import { attachClickListener } from './listeners/click';
+import { registerRuleDebugMenus } from './debug/ruleMenu';
 
 const DEV_MENUS = true; // 发布前可改为 false，仅保留“设置入口（占位）”
 
@@ -36,17 +38,22 @@ const DEV_MENUS = true; // 发布前可改为 false，仅保留“设置入口�
     );
   }
 
-  // 结合白/黑名单，计算最终启用状态（黑 > 白 > 自动识别）
+  // 结合白/黑名单，计算最终启用状态（白 > 黑 > 自动识别）
   const host = getCurrentHostname();
   const enable = await getEnablement(result.isDiscourse, host);
   console.log(`${label} 当前域名：${host} | 状态：${enable.enabled ? '已启用' : '未启用'}（原因：${enable.reason}）`);
 
-  // 设置入口（占位）—— 统一 GUI 未来接管
+  // 启用时挂载点击监听（统一由规则引擎决策是否新标签或保留原生）
+  if (enable.enabled) {
+    attachClickListener(label);
+  }
+
+  // 设置入口（占位）—未来由统一 GUI 接管
   gmRegisterMenu('设置入口（占位）', () => {
     console.log(`${label} 设置界面尚未实现，后续版本将提供图形界面。`);
   });
 
-  // 调试菜单：仅在开发阶段开启，方便验证白/黑名单
+  // 调试菜单：仅在开发阶段开启，方便验证白/黑名单与规则
   if (DEV_MENUS) {
     gmRegisterMenu('【调试】查看当前域状态', async () => {
       const r = await getEnablement(result.isDiscourse, host);
@@ -54,19 +61,23 @@ const DEV_MENUS = true; // 发布前可改为 false，仅保留“设置入口�
     });
     gmRegisterMenu('【调试】白名单：添加当前域', async () => {
       const { added } = await addToWhitelist(host);
-      console.log(`${label} 白名单${added ? '已添加' : '已存在'}：${host}`);
+      console.log(`${label} 白名单：${added ? '已添加' : '已存在'} → ${host}`);
     });
     gmRegisterMenu('【调试】白名单：移除当前域', async () => {
       const { removed } = await removeFromWhitelist(host);
-      console.log(`${label} 白名单${removed ? '已移除' : '不存在'}：${host}`);
+      console.log(`${label} 白名单：${removed ? '已移除' : '不存在'} → ${host}`);
     });
     gmRegisterMenu('【调试】黑名单：添加当前域', async () => {
       const { added } = await addToBlacklist(host);
-      console.log(`${label} 黑名单${added ? '已添加' : '已存在'}：${host}`);
+      console.log(`${label} 黑名单：${added ? '已添加' : '已存在'} → ${host}`);
     });
     gmRegisterMenu('【调试】黑名单：移除当前域', async () => {
       const { removed } = await removeFromBlacklist(host);
-      console.log(`${label} 黑名单${removed ? '已移除' : '不存在'}：${host}`);
+      console.log(`${label} 黑名单：${removed ? '已移除' : '不存在'} → ${host}`);
     });
+
+    // 规则调试菜单（非调试模式不显示）
+    registerRuleDebugMenus(label);
   }
 })();
+
