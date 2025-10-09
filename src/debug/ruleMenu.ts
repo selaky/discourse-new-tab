@@ -32,5 +32,38 @@ export function registerRuleDebugMenus(label: string = '[discourse-new-tab]') {
     await setRuleEnabled(id, next);
     console.log(`${label} 规则[${id}] → ${next ? '启用' : '关闭'}`);
   });
-}
 
+  // 个人主页规则
+  gmRegisterMenu('【调试】切换：任意页打开个人主页=新标签', async () => {
+    const flags = await getRuleFlags();
+    const id = 'user:open-new-tab';
+    const next = !flags[id];
+    await setRuleEnabled(id, next);
+    console.log(`${label} 规则[${id}] → ${next ? '启用' : '关闭'}`);
+  });
+
+  gmRegisterMenu('【调试】切换：个人主页内点击其他链接=新标签', async () => {
+    const flags = await getRuleFlags();
+    const id = 'user:in-profile-open-other';
+    const next = !flags[id];
+    await setRuleEnabled(id, next);
+    console.log(`${label} 规则[${id}] → ${next ? '启用' : '关闭'}`);
+  });
+
+  gmRegisterMenu('【调试】切换：同一用户主页=保留原生', async () => {
+    const flags = await getRuleFlags();
+    const id = 'user:same-profile-keep-native';
+    const next = !flags[id];
+    await setRuleEnabled(id, next);
+    console.log(`${label} 规则[${id}] → ${next ? '启用' : '关闭'}`);
+  });
+
+  // 附件规则
+  gmRegisterMenu('【调试】切换：附件链接=保留原生', async () => {
+    const flags = await getRuleFlags();
+    const id = 'attachment:keep-native';
+    const next = !flags[id];
+    await setRuleEnabled(id, next);
+    console.log(`${label} 规则[${id}] → ${next ? '启用' : '关闭'}`);
+  });
+}

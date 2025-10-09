@@ -7,11 +7,23 @@ export const RULE_TOPIC_OPEN_NEW_TAB = 'topic:open-new-tab';
 export const RULE_TOPIC_IN_TOPIC_OPEN_OTHER = 'topic:in-topic-open-other';
 export const RULE_TOPIC_SAME_TOPIC_KEEP_NATIVE = 'topic:same-topic-keep-native';
 
+// 个人主页三条细分规则
+export const RULE_USER_OPEN_NEW_TAB = 'user:open-new-tab';
+export const RULE_USER_IN_PROFILE_OPEN_OTHER = 'user:in-profile-open-other';
+export const RULE_USER_SAME_PROFILE_KEEP_NATIVE = 'user:same-profile-keep-native';
+
+// 附件规则
+export const RULE_ATTACHMENT_KEEP_NATIVE = 'attachment:keep-native';
+
 // 默认开关：全部启用
 const DEFAULTS: Record<string, boolean> = {
   [RULE_TOPIC_OPEN_NEW_TAB]: true,
   [RULE_TOPIC_IN_TOPIC_OPEN_OTHER]: true,
   [RULE_TOPIC_SAME_TOPIC_KEEP_NATIVE]: true,
+  [RULE_USER_OPEN_NEW_TAB]: true,
+  [RULE_USER_IN_PROFILE_OPEN_OTHER]: true,
+  [RULE_USER_SAME_PROFILE_KEEP_NATIVE]: true,
+  [RULE_ATTACHMENT_KEEP_NATIVE]: true,
 };
 
 const KEY_RULES = 'ruleFlags';
@@ -35,4 +47,3 @@ export async function setRuleEnabled(ruleId: string, enabled: boolean): Promise<
   flags[ruleId] = enabled;
   await gmSet(KEY_RULES, flags);
 }
-
