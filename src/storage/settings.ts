@@ -14,6 +14,9 @@ export const RULE_USER_SAME_PROFILE_KEEP_NATIVE = 'user:same-profile-keep-native
 
 // 附件规则
 export const RULE_ATTACHMENT_KEEP_NATIVE = 'attachment:keep-native';
+// 弹窗规则（两个大项）
+export const RULE_POPUP_USER_CARD = 'popup:user-card';
+export const RULE_POPUP_USER_MENU = 'popup:user-menu';
 
 // 默认开关：全部启用
 const DEFAULTS: Record<string, boolean> = {
@@ -24,6 +27,8 @@ const DEFAULTS: Record<string, boolean> = {
   [RULE_USER_IN_PROFILE_OPEN_OTHER]: true,
   [RULE_USER_SAME_PROFILE_KEEP_NATIVE]: true,
   [RULE_ATTACHMENT_KEEP_NATIVE]: true,
+  [RULE_POPUP_USER_CARD]: true,
+  [RULE_POPUP_USER_MENU]: true,
 };
 
 const KEY_RULES = 'ruleFlags';

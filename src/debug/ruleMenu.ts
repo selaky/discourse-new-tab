@@ -66,4 +66,21 @@ export function registerRuleDebugMenus(label: string = '[discourse-new-tab]') {
     await setRuleEnabled(id, next);
     console.log(`${label} 规则[${id}] → ${next ? '启用' : '关闭'}`);
   });
+
+  // 弹窗规则（两个大项）
+  gmRegisterMenu('【调试】切换：弹窗-用户卡片', async () => {
+    const flags = await getRuleFlags();
+    const id = 'popup:user-card';
+    const next = !flags[id];
+    await setRuleEnabled(id, next);
+    console.log(`${label} 规则[${id}] → ${next ? '启用' : '关闭'}`);
+  });
+
+  gmRegisterMenu('【调试】切换：弹窗-用户菜单', async () => {
+    const flags = await getRuleFlags();
+    const id = 'popup:user-menu';
+    const next = !flags[id];
+    await setRuleEnabled(id, next);
+    console.log(`${label} 规则[${id}] → ${next ? '启用' : '关闭'}`);
+  });
 }
