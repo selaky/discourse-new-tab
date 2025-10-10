@@ -36,6 +36,22 @@ export function isInUserMenuNav(el: Element | null): boolean {
   return !!closestAny(el as Element, USER_MENU_NAV_SELECTORS);
 }
 
+// 侧边栏（左侧分类导航等）常见选择器集合
+// 说明：不同 Discourse 站点可能存在定制，以下选择器取常见命名，必要时可扩展
+const SIDEBAR_SELECTORS = [
+  '#sidebar',
+  '.sidebar',
+  '.d-sidebar',
+  '.sidebar-container',
+  '.discourse-sidebar',
+  '.sidebar-section',
+  '.sidebar-wrapper',
+];
+
+export function isInSidebar(el: Element | null): boolean {
+  return !!closestAny(el as Element, SIDEBAR_SELECTORS);
+}
+
 // 触发“用户卡片”的典型 <a>：通常带有 data-user-card 属性或特定类名
 export function isUserCardTrigger(a: HTMLAnchorElement): boolean {
   if (!a) return false;

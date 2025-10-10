@@ -18,6 +18,10 @@ export const RULE_ATTACHMENT_KEEP_NATIVE = 'attachment:keep-native';
 export const RULE_POPUP_USER_CARD = 'popup:user-card';
 export const RULE_POPUP_USER_MENU = 'popup:user-menu';
 
+// 侧边栏规则
+export const RULE_SIDEBAR_NON_TOPIC_KEEP_NATIVE = 'sidebar:non-topic-keep-native';
+export const RULE_SIDEBAR_IN_TOPIC_NEW_TAB = 'sidebar:in-topic-open-new-tab';
+
 // 默认开关：全部启用
 const DEFAULTS: Record<string, boolean> = {
   [RULE_TOPIC_OPEN_NEW_TAB]: true,
@@ -29,6 +33,8 @@ const DEFAULTS: Record<string, boolean> = {
   [RULE_ATTACHMENT_KEEP_NATIVE]: true,
   [RULE_POPUP_USER_CARD]: true,
   [RULE_POPUP_USER_MENU]: true,
+  [RULE_SIDEBAR_NON_TOPIC_KEEP_NATIVE]: true,
+  [RULE_SIDEBAR_IN_TOPIC_NEW_TAB]: true,
 };
 
 const KEY_RULES = 'ruleFlags';

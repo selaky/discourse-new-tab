@@ -103,7 +103,7 @@
   - `isActiveTab(a: HTMLAnchorElement): boolean`（菜单导航项是否为激活态）
 
 ### 规则模块（rules/*.ts）
-- 汇总顺序：`src/rules/index.ts` 返回 `[...topicRules, ...userRules, ...popupRules, ...attachmentRules]`；越靠后优先级越高（附件放最后作为保守兜底）。
+- 汇总顺序：`src/rules/index.ts` 返回 `[...topicRules, ...userRules, ...attachmentRules, ...popupRules, ...sidebarRules]`；越靠后优先级越高。侧边栏位于最后，用于在侧边栏场景下覆盖前面规则。
 
 #### 主题帖（topic.ts）
 - 规则 1：`topic:open-new-tab`（任意页面 → 主题帖）
@@ -144,6 +144,18 @@
   - 启用：`keep_native`
   - 关闭：`new_tab`
 - 解析：`isLikelyAttachment` 判断 `/uploads/` 或常见扩展名。
+
+#### 侧边栏（sidebar.ts）
+- 规则 1：`sidebar:non-topic-keep-native`（非主题页内 → 侧边栏链接）
+  - 启用：`keep_native`
+  - 关闭：`new_tab`
+  - 说明：当当前页面不是主题帖时，点击左侧分类导航等侧边栏内链接，保持站点原生行为；关闭该规则后改为新标签页打开。
+- 规则 2：`sidebar:in-topic-open-new-tab`（主题页内 → 侧边栏链接）
+  - 启用：`new_tab`
+  - 关闭：`keep_native`
+  - 说明：当当前页面是主题帖时，点击侧边栏内链接以新标签页打开；关闭该规则后改为保留原生行为。
+-
+ 选择器解析：`utils/dom.ts` 提供 `isInSidebar(el)`，内部包含常见的侧边栏选择器集合（如 `#sidebar`、`.sidebar`、`.d-sidebar` 等），必要时可扩展。
 
 ## 事件监听（listeners/click）
 - 文件：`src/listeners/click.ts`

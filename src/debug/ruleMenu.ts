@@ -83,4 +83,21 @@ export function registerRuleDebugMenus(label: string = '[discourse-new-tab]') {
     await setRuleEnabled(id, next);
     console.log(`${label} 规则[${id}] → ${next ? '启用' : '关闭'}`);
   });
+
+  // 侧边栏规则
+  gmRegisterMenu('【调试】切换：侧边栏-非主题页=保留原生', async () => {
+    const flags = await getRuleFlags();
+    const id = 'sidebar:non-topic-keep-native';
+    const next = !flags[id];
+    await setRuleEnabled(id, next);
+    console.log(`${label} 规则[${id}] → ${next ? '启用' : '关闭'}`);
+  });
+
+  gmRegisterMenu('【调试】切换：侧边栏-主题页=新标签', async () => {
+    const flags = await getRuleFlags();
+    const id = 'sidebar:in-topic-open-new-tab';
+    const next = !flags[id];
+    await setRuleEnabled(id, next);
+    console.log(`${label} 规则[${id}] → ${next ? '启用' : '关闭'}`);
+  });
 }

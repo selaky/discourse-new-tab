@@ -5,6 +5,7 @@ import { topicRules } from './topic';
 import { userRules } from './user';
 import { attachmentRules } from './attachment';
 import { popupRules } from './popup';
+import { sidebarRules } from './sidebar';
 
 export function getAllRules(): Rule[] {
   // 可后续添加规则
@@ -14,6 +15,7 @@ export function getAllRules(): Rule[] {
     ...userRules,
     ...attachmentRules,
     ...popupRules,
+    ...sidebarRules,
   ];
 }
 
