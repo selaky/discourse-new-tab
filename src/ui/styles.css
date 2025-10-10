@@ -1,0 +1,474 @@
+/* 设置界面样式 - 简约设计 */
+
+/* CSS变量 - 日间主题 */
+:root[data-dnt-theme="light"] {
+  --dnt-bg-overlay: rgba(0, 0, 0, 0.5);
+  --dnt-bg-dialog: #ffffff;
+  --dnt-bg-section: #f8f9fa;
+  --dnt-bg-input: #ffffff;
+  --dnt-bg-hover: #f0f0f0;
+
+  --dnt-text-primary: #2c3e50;
+  --dnt-text-secondary: #6c757d;
+  --dnt-text-muted: #999999;
+
+  --dnt-border: #e1e4e8;
+  --dnt-border-focus: #67c23a;
+
+  --dnt-primary: #67c23a;
+  --dnt-primary-hover: #85ce61;
+  --dnt-danger: #f56c6c;
+  --dnt-danger-hover: #f78989;
+
+  --dnt-badge-auto: #409eff;
+  --dnt-badge-whitelist: #67c23a;
+  --dnt-badge-blacklist: #f56c6c;
+  --dnt-badge-disabled: #909399;
+
+  --dnt-toggle-on: #67c23a;
+  --dnt-toggle-off: #dcdfe6;
+  --dnt-toggle-thumb: #ffffff;
+
+  --dnt-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* CSS变量 - 夜间主题 */
+:root[data-dnt-theme="dark"] {
+  --dnt-bg-overlay: rgba(0, 0, 0, 0.7);
+  --dnt-bg-dialog: #1e1e1e;
+  --dnt-bg-section: #2a2a2a;
+  --dnt-bg-input: #363636;
+  --dnt-bg-hover: #3a3a3a;
+
+  --dnt-text-primary: #e4e4e4;
+  --dnt-text-secondary: #b0b0b0;
+  --dnt-text-muted: #888888;
+
+  --dnt-border: #404040;
+  --dnt-border-focus: #67c23a;
+
+  --dnt-primary: #67c23a;
+  --dnt-primary-hover: #85ce61;
+  --dnt-danger: #f56c6c;
+  --dnt-danger-hover: #f78989;
+
+  --dnt-badge-auto: #409eff;
+  --dnt-badge-whitelist: #67c23a;
+  --dnt-badge-blacklist: #f56c6c;
+  --dnt-badge-disabled: #909399;
+
+  --dnt-toggle-on: #67c23a;
+  --dnt-toggle-off: #4a4a4a;
+  --dnt-toggle-thumb: #ffffff;
+
+  --dnt-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* 重置样式 */
+.dnt-overlay *,
+.dnt-overlay *::before,
+.dnt-overlay *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* 遮罩层 */
+.dnt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--dnt-bg-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* 对话框 */
+.dnt-dialog {
+  background: var(--dnt-bg-dialog);
+  border-radius: 8px;
+  box-shadow: var(--dnt-shadow);
+  width: 90%;
+  max-width: 680px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 头部 */
+.dnt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--dnt-border);
+}
+
+.dnt-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--dnt-text-primary);
+}
+
+.dnt-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.dnt-icon-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--dnt-text-secondary);
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.dnt-icon-btn:hover {
+  background: var(--dnt-bg-hover);
+  color: var(--dnt-text-primary);
+}
+
+/* 内容区 */
+.dnt-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+
+.dnt-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dnt-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dnt-content::-webkit-scrollbar-thumb {
+  background: var(--dnt-border);
+  border-radius: 4px;
+}
+
+.dnt-content::-webkit-scrollbar-thumb:hover {
+  background: var(--dnt-text-muted);
+}
+
+/* 区块 */
+.dnt-section {
+  margin-bottom: 24px;
+}
+
+.dnt-section:last-child {
+  margin-bottom: 0;
+}
+
+.dnt-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--dnt-text-primary);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--dnt-primary);
+}
+
+/* 状态区域 */
+.dnt-status-content {
+  background: var(--dnt-bg-section);
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.dnt-status-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.dnt-status-row:last-child {
+  margin-bottom: 0;
+}
+
+.dnt-status-label {
+  color: var(--dnt-text-primary);
+  font-weight: 500;
+}
+
+.dnt-status-value {
+  color: var(--dnt-text-secondary);
+}
+
+.dnt-domain-text {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 13px;
+}
+
+/* 徽章 */
+.dnt-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.dnt-badge-auto {
+  background: var(--dnt-badge-auto);
+}
+
+.dnt-badge-whitelist {
+  background: var(--dnt-badge-whitelist);
+}
+
+.dnt-badge-blacklist {
+  background: var(--dnt-badge-blacklist);
+}
+
+.dnt-badge-disabled {
+  background: var(--dnt-badge-disabled);
+}
+
+/* 域名管理区域 */
+.dnt-domain-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dnt-list-block {
+  background: var(--dnt-bg-section);
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.dnt-list-subtitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dnt-text-primary);
+  margin-bottom: 12px;
+}
+
+.dnt-domain-list {
+  margin-bottom: 12px;
+  min-height: 40px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.dnt-domain-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dnt-domain-list::-webkit-scrollbar-thumb {
+  background: var(--dnt-border);
+  border-radius: 3px;
+}
+
+.dnt-domain-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--dnt-bg-input);
+  border: 1px solid var(--dnt-border);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.dnt-domain-item:last-child {
+  margin-bottom: 0;
+}
+
+.dnt-empty-text {
+  color: var(--dnt-text-muted);
+  font-size: 13px;
+  text-align: center;
+  padding: 20px;
+}
+
+/* 输入框 */
+.dnt-input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.dnt-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--dnt-border);
+  border-radius: 4px;
+  background: var(--dnt-bg-input);
+  color: var(--dnt-text-primary);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.dnt-input:focus {
+  border-color: var(--dnt-border-focus);
+}
+
+.dnt-input::placeholder {
+  color: var(--dnt-text-muted);
+}
+
+/* 按钮 */
+.dnt-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.dnt-btn-primary {
+  background: var(--dnt-primary);
+  color: #ffffff;
+}
+
+.dnt-btn-primary:hover {
+  background: var(--dnt-primary-hover);
+}
+
+.dnt-btn-secondary {
+  background: var(--dnt-bg-input);
+  color: var(--dnt-text-primary);
+  border: 1px solid var(--dnt-border);
+  width: 100%;
+}
+
+.dnt-btn-secondary:hover {
+  background: var(--dnt-bg-hover);
+}
+
+.dnt-btn-danger {
+  background: var(--dnt-danger);
+  color: #ffffff;
+}
+
+.dnt-btn-danger:hover {
+  background: var(--dnt-danger-hover);
+}
+
+.dnt-btn-sm {
+  padding: 4px 12px;
+  font-size: 13px;
+}
+
+/* 规则区域 */
+.dnt-rules-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dnt-rule-group {
+  background: var(--dnt-bg-section);
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.dnt-rule-group-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dnt-text-primary);
+  margin-bottom: 12px;
+}
+
+.dnt-rule-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--dnt-border);
+}
+
+.dnt-rule-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.dnt-rule-label {
+  color: var(--dnt-text-primary);
+  font-size: 14px;
+  flex: 1;
+  cursor: default;
+}
+
+/* 开关 */
+.dnt-toggle {
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.3s;
+}
+
+.dnt-toggle-on {
+  background: var(--dnt-toggle-on);
+}
+
+.dnt-toggle-off {
+  background: var(--dnt-toggle-off);
+}
+
+.dnt-toggle-track {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.dnt-toggle-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--dnt-toggle-thumb);
+  position: absolute;
+  top: 2px;
+  transition: left 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dnt-toggle-on .dnt-toggle-thumb {
+  left: 22px;
+}
+
+.dnt-toggle-off .dnt-toggle-thumb {
+  left: 2px;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .dnt-dialog {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .dnt-header,
+  .dnt-content {
+    padding: 16px;
+  }
+
+  .dnt-title {
+    font-size: 18px;
+  }
+}

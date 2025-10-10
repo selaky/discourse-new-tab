@@ -43,6 +43,9 @@ async function run() {
       sourcemap: false,
       legalComments: 'none',
       logLevel: 'info',
+      loader: {
+        '.css': 'text',
+      },
     };
 
     if (isWatch) {

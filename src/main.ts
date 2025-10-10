@@ -48,9 +48,10 @@ const DEV_MENUS = true; // 发布前可改为 false，仅保留“设置入口�
     attachClickListener(label);
   }
 
-  // 设置入口（占位）—未来由统一 GUI 接管
-  gmRegisterMenu('设置入口（占位）', () => {
-    console.log(`${label} 设置界面尚未实现，后续版本将提供图形界面。`);
+  // 设置入口 - 打开设置界面
+  gmRegisterMenu('设置', async () => {
+    const { openSettings } = await import('./ui/settings');
+    await openSettings();
   });
 
   // 调试菜单：仅在开发阶段开启，方便验证白/黑名单与规则
