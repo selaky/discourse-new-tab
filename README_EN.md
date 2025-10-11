@@ -133,9 +133,7 @@ All rules can be independently enabled or disabled in the settings interface. Th
 
 ## Settings Preview
 
-<!-- TODO: Add settings interface screenshots -->
-
-_Settings interface screenshots to be added_
+![Settings Interface](screenshots/settings1.0.0.png)
 
 Settings interface features:
 
