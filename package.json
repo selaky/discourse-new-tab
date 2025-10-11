@@ -1,15 +1,49 @@
 {
   "name": "discourse-new-tab",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
-  "description": "Tampermonkey userscript: open Discourse links in new tabs based on rules",
+  "description": "专注优化 Discourse 论坛多种情况下点击链接的体验，可在新标签页打开主题帖等页面，支持大量可自定义细节，自动识别 Discourse 站点",
   "type": "module",
   "scripts": {
     "build": "node esbuild.config.mjs",
     "dev": "node esbuild.config.mjs --watch",
     "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\""
   },
+  "license": "MIT",
+  "author": "selaky",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/selaky/discourse-new-tab.git"
+  },
+  "bugs": {
+    "url": "https://github.com/selaky/discourse-new-tab/issues"
+  },
+  "homepage": "https://github.com/selaky/discourse-new-tab#readme",
   "devDependencies": {
     "esbuild": "^0.25.10"
+  },
+  "userscript": {
+    "names": {
+      "zh": "Discourse 新标签页",
+      "en": "Discourse New Tab"
+    },
+    "descriptions": {
+      "zh": "专注优化 Discourse 论坛多种情况下点击链接的体验，可在新标签页打开主题帖等页面，支持大量可自定义细节，自动识别 Discourse 站点",
+      "en": "Optimize link-click experience on Discourse: open topics and related pages in new tabs, highly customizable, auto-detects Discourse"
+    },
+    "namespace": "https://github.com/selaky/discourse-new-tab",
+    "author": "selaky",
+    "license": "MIT",
+    "match": [
+      "http*://*/*"
+    ],
+    "grant": [
+      "GM_getValue",
+      "GM_setValue",
+      "GM_registerMenuCommand"
+    ],
+    "run-at": "document-start",
+    "homepageURL": "https://github.com/selaky/discourse-new-tab",
+    "supportURL": "https://github.com/selaky/discourse-new-tab/issues"
   }
 }

@@ -4,24 +4,39 @@ import path from 'node:path';
 
 const isWatch = process.argv.includes('--watch');
 
-const banner = {
-  js: `// ==UserScript==\n`
-    + `// @name         Discourse 新标签页\n`
-    + `// @name:en      Discourse New Tab\n`
-    + `// @namespace    https://github.com/your-username/discourse-new-tab\n`
-    + `// @version      0.1.0\n`
-    + `// @description  在 Discourse 论坛将指定链接在新标签页打开（逐步实现中）\n`
-    + `// @author       You\n`
-    + `// @match        http*://*/*\n`
-    + `// @grant        GM_getValue\n`
-    + `// @grant        GM_setValue\n`
-    + `// @grant        GM_deleteValue\n`
-    + `// @grant        GM_listValues\n`
-    + `// @grant        GM_registerMenuCommand\n`
-    + `// @run-at       document-start\n`
-    + `// @license      MIT\n`
-    + `// ==/UserScript==\n`,
-};
+function readPkg() {
+  const pkgPath = new URL('./package.json', import.meta.url);
+  return JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+}
+
+function buildUserscriptBanner(pkg) {
+  const us = pkg.userscript || {};
+  const names = us.names || {};
+  const descriptions = us.descriptions || {};
+
+  const lines = [
+    '// ==UserScript==',
+    `// @name         ${names.zh || pkg.displayName || pkg.name}`,
+    ...(names.en ? [`// @name:en      ${names.en}`] : []),
+    ...(us.namespace ? [`// @namespace    ${us.namespace}`] : []),
+    `// @version      ${pkg.version}`,
+    `// @description  ${descriptions.zh || pkg.description || ''}`,
+    ...(us.author || pkg.author ? [`// @author       ${us.author || pkg.author}`] : []),
+    ...(us.homepageURL ? [`// @homepageURL  ${us.homepageURL}`] : []),
+    ...(us.supportURL ? [`// @supportURL   ${us.supportURL}`] : []),
+    ...(us.icon ? [`// @icon         ${us.icon}`] : []),
+    ...(us.icon64 ? [`// @icon64       ${us.icon64}`] : []),
+    ...(Array.isArray(us.match) ? us.match.map((m) => `// @match        ${m}`) : []),
+    ...(Array.isArray(us.include) ? us.include.map((p) => `// @include      ${p}`) : []),
+    ...(Array.isArray(us.exclude) ? us.exclude.map((p) => `// @exclude      ${p}`) : []),
+    ...(Array.isArray(us.grant) ? us.grant.map((g) => `// @grant        ${g}`) : []),
+    ...(us['run-at'] ? [`// @run-at       ${us['run-at']}`] : []),
+    `// @license      ${us.license || pkg.license || ''}`,
+    '// ==/UserScript=='
+  ].filter(Boolean);
+
+  return { js: lines.join('\n') + '\n' };
+}
 
 async function run() {
   try {
@@ -31,6 +46,7 @@ async function run() {
       fs.mkdirSync(outDir, { recursive: true });
     }
 
+    const pkg = readPkg();
     const options = {
       entryPoints: ['src/main.ts'],
       outfile: outFile,
@@ -39,19 +55,22 @@ async function run() {
       format: 'iife',
       platform: 'browser',
       target: ['es2020'],
-      banner,
+      banner: buildUserscriptBanner(pkg),
       sourcemap: false,
       legalComments: 'none',
       logLevel: 'info',
       loader: {
         '.css': 'text',
       },
+      define: {
+        __APP_VERSION__: JSON.stringify(pkg.version),
+      },
     };
 
     if (isWatch) {
       const ctx = await esbuild.context(options);
       await ctx.watch();
-      console.log('构建开启监听...');
+      console.log('构建已开启监视...');
     } else {
       await esbuild.build(options);
       console.log('构建完成');

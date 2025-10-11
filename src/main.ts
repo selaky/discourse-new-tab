@@ -11,7 +11,7 @@ import {
 import { attachClickListener } from './listeners/click';
 import { registerRuleDebugMenus } from './debug/ruleMenu';
 
-const DEV_MENUS = true; // 发布前可改为 false，仅保留“设置入口（占位）”
+const DEV_MENUS = false; // 调试模式,发布前可改为 false
 
 (async () => {
   const label = '[discourse-new-tab]';
