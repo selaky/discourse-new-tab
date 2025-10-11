@@ -1,11 +1,11 @@
-# Discourse 新标签页(部分链接还是占位符)
+# Discourse 新标签页
 
 > 专注优化 Discourse 论坛多种情况下点击链接的体验,可在新标签页打开主题帖等页面,支持大量可自定义细节,自动识别 Discourse 站点
 
 [English](README_EN.md) | 简体中文
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Greasy Fork](https://img.shields.io/badge/Greasy%20Fork-Install-green)](https://greasyfork.org/zh-CN/scripts/YOUR_SCRIPT_ID)
+[![Greasy Fork](https://img.shields.io/badge/Greasy%20Fork-Install-green)](https://greasyfork.org/zh-CN/scripts/552284-discourse-%E6%96%B0%E6%A0%87%E7%AD%BE%E9%A1%B5)
 
 ## 📌 目录
 
@@ -82,8 +82,8 @@
 
 安装完脚本管理器后,点击下方链接安装本脚本:
 
-- **Greasy Fork (推荐)**: [点击安装](https://greasyfork.org/zh-CN/scripts/YOUR_SCRIPT_ID)
-- **GitHub**: [点击安装](https://github.com/selaky/discourse-new-tab/raw/main/dist/discourse-new-tab.user.js)
+- **Greasy Fork (推荐)**: [点击安装](https://greasyfork.org/zh-CN/scripts/552284-discourse-%E6%96%B0%E6%A0%87%E7%AD%BE%E9%A1%B5)
+- **GitHub**: [点击安装](https://github.com/selaky/discourse-new-tab/releases/latest/download/discourse-new-tab.user.js)
 
 ## 使用说明
 

@@ -21,6 +21,7 @@ function buildUserscriptBanner(pkg) {
     ...(us.namespace ? [`// @namespace    ${us.namespace}`] : []),
     `// @version      ${pkg.version}`,
     `// @description  ${descriptions.zh || pkg.description || ''}`,
+    ...(descriptions.en ? [`// @description:en ${descriptions.en}`] : []),
     ...(us.author || pkg.author ? [`// @author       ${us.author || pkg.author}`] : []),
     ...(us.homepageURL ? [`// @homepageURL  ${us.homepageURL}`] : []),
     ...(us.supportURL ? [`// @supportURL   ${us.supportURL}`] : []),

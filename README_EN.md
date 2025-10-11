@@ -5,7 +5,7 @@
 English | [简体中文](README.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Greasy Fork](https://img.shields.io/badge/Greasy%20Fork-Install-green)](https://greasyfork.org/en/scripts/YOUR_SCRIPT_ID)
+[![Greasy Fork](https://img.shields.io/badge/Greasy%20Fork-Install-green)](https://greasyfork.org/en/scripts/552284-discourse-%E6%96%B0%E6%A0%87%E7%AD%BE%E9%A1%B5?locale_override=1)
 
 ## 📌 Table of Contents
 
@@ -80,8 +80,8 @@ First, install a userscript manager:
 
 After installing the userscript manager, click one of the links below to install this script:
 
-- **Greasy Fork (Recommended)**: [Click to Install](https://greasyfork.org/en/scripts/YOUR_SCRIPT_ID)
-- **GitHub**: [Click to Install](https://github.com/selaky/discourse-new-tab/raw/main/dist/discourse-new-tab.user.js)
+- **Greasy Fork (Recommended)**: [Click to Install](https://greasyfork.org/en/scripts/552284-discourse-%E6%96%B0%E6%A0%87%E7%AD%BE%E9%A1%B5?locale_override=1)
+- **GitHub**: [Click to Install](https://github.com/selaky/discourse-new-tab/releases/latest/download/discourse-new-tab.user.js)
 
 ## Usage
 
