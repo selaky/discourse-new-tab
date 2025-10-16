@@ -12,7 +12,7 @@ export interface LinkContext {
   currentUrl: URL;
 }
 
-// 规则匹配结果（仅用于说明命中原因与调试）
+// 规则匹配结果（用于说明命中原因）
 export interface MatchMeta {
   matched: true;
   note?: string;
@@ -25,24 +25,17 @@ export type MatchResult = MatchMeta | null;
 // 单条规则定义：不匹配返回 null；匹配后根据开关产出动作
 export interface Rule {
   id: string; // 唯一标识，用于存储开关
-  name: string; // 规则名称（调试展示）
+  name: string; // 规则名称
   // 规则匹配逻辑：必须保证不匹配时返回 null
   match: (ctx: LinkContext) => MatchResult;
   // 规则启用时的缺省动作
   enabledAction: Action;
-  // 规则关闭时的动作（用于需求：前两条关闭=原生，最后一条关闭=新标签）
+  // 规则关闭时的动作
   disabledAction: Action;
 }
 
 export interface Decision {
   action: Action;
   // 命中的规则 id（未命中任何规则时可为 'default'）
-  ruleId: string;
-  // 调试信息（可选）
-  debug?: {
-    ruleName?: string;
-    note?: string;
-    data?: Record<string, any>;
-  };
-}
+  ruleId: string;}
 

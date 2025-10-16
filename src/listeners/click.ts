@@ -1,4 +1,4 @@
-// 点击监听与统一跳转处理（中文注释）
+// 点击监听与统一跳转处理
 
 import { evaluateRules } from '../decision/engine';
 import type { LinkContext } from '../decision/types';
@@ -11,14 +11,13 @@ function isPlainLeftClick(ev: MouseEvent): boolean {
 
 // 避免跨 realm instanceof 问题，使用 tagName 判断
 function findAnchor(el: EventTarget | null): HTMLAnchorElement | null {
-  try {
-    let node = el as Node | null;
-    while (node) {
-      const elem = node as HTMLElement;
-      if (elem && elem.tagName === 'A') return elem as HTMLAnchorElement;
-      node = (elem && elem.parentElement) ? elem.parentElement : null;
-    }
-  } catch {}
+  let node = el as Node | null;
+  while (node) {
+    // 类型判断和属性检查
+    const elem = node as HTMLElement;
+    if (elem && elem.tagName === 'A') return elem as HTMLAnchorElement;
+    node = (elem && elem.parentElement) ? elem.parentElement : null;
+  }
   return null;
 }
 
@@ -42,10 +41,10 @@ export function attachClickListener(label: string = '[discourse-new-tab]') {
       if (decision.action === 'new_tab') {
         // 新标签页打开，并强力阻止原页面的任何进一步处理
         ev.preventDefault();
-        try { ev.stopImmediatePropagation(); } catch {}
-        try { ev.stopPropagation(); } catch {}
+        ev.stopImmediatePropagation();
+        ev.stopPropagation();
         window.open(targetUrl.href, '_blank', 'noopener'); // 避免 opener 泄漏
-        try { a.setAttribute('data-dnt-handled', '1'); } catch {}
+        a.setAttribute('data-dnt-handled', '1');
         return; // 终止后续处理
       } else if (decision.action === 'same_tab') {
         // 预留：目前未使用，未来可用作“强制同页打开”
@@ -54,12 +53,10 @@ export function attachClickListener(label: string = '[discourse-new-tab]') {
         // keep_native：保持原生，什么都不做
       }
     } catch (err) {
-      // 出错时不影响原生行为
-      // console.warn('[discourse-new-tab] click handler error:', err);
+      // 出错时不影响原生行为. 这个 catch 块是必要的，以防逻辑中出现意外错误，保证不破坏页面默认行为。
     }
   };
 
   // 捕获阶段尽早拦截，降低站点脚本先行处理的概率
   document.addEventListener('click', handler, true);
 }
-

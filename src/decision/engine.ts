@@ -22,7 +22,6 @@ export async function evaluateRules(rules: Rule[], ctx: LinkContext): Promise<De
     lastDecision = {
       action,
       ruleId: rule.id,
-      debug: { ruleName: rule.name, note: match.note, data: match.data },
     };
     // 不提前返回，确保“靠后优先级更高”
   }
