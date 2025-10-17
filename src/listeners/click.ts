@@ -5,6 +5,7 @@ import type { LinkContext } from '../decision/types';
 import { getAllRules } from '../rules';
 import { toAbsoluteUrl } from '../utils/url';
 import { logClickFilter, logFinalDecision, logLinkInfo } from '../debug/logger';
+import { isInSearchResults, resolveSearchResultLink } from '../utils/dom';
 
 function isPlainLeftClick(ev: MouseEvent): boolean {
   return ev.button === 0 && !ev.ctrlKey && !ev.metaKey && !ev.shiftKey && !ev.altKey;
@@ -32,11 +33,18 @@ export function attachClickListener(label: string = '[discourse-new-tab]') {
 
       const a = findAnchor(ev.target);
       if (!a) { await logClickFilter('未找到 <a> 元素'); return; }
-      if (!a.href) { await logClickFilter('链接无 href'); return; }
+      // 容错：搜索结果弹窗中可能存在无 href 的 <a>，通过 data-xxx 或 topic id 推断 URL
+      let rawHref = a.getAttribute('href') || a.href || '';
+      if (!rawHref || rawHref === '#') {
+        if (isInSearchResults(a)) {
+          const fallback = resolveSearchResultLink(a);
+          if (fallback) rawHref = fallback;
+        }
+      }
+      if (!rawHref) { await logClickFilter('链接无 href'); return; }
       if (a.hasAttribute('download')) { await logClickFilter('下载链接'); return; } // 下载链接不拦截
-      if (a.getAttribute('data-dnt-ignore') === '1') { await logClickFilter('显式忽略标记 data-dnt-ignore=1'); return; } // 提供逃生口
-
-      const targetUrl = toAbsoluteUrl(a.getAttribute('href') || a.href, location.href);
+      if (a.getAttribute('data-dnt-ignore') === '1') { await logClickFilter('显式忽略标记 data-dnt-ignore=1'); return; } // 提供逃生阀
+      const targetUrl = toAbsoluteUrl(rawHref, location.href);
       if (!targetUrl) { await logClickFilter('目标 URL 解析失败'); return; }
 
       const ctx: LinkContext = { anchor: a, targetUrl, currentUrl: new URL(location.href) };

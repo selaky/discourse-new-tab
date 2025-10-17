@@ -92,3 +92,111 @@ export function isActiveTab(a: HTMLAnchorElement): boolean {
   return /active|selected/.test(cls);
 }
 
+// —— 搜索弹窗（Search Menu）——
+// 说明：为避免与用户菜单选择器混淆，这里单独提供搜索相关的判定函数。
+// 结构在不同版本/主题中略有差异，以下选择器尽量覆盖核心容器与结果区。
+
+// 搜索弹窗主体容器（尽量精确，优先 ID，再到常见类名）
+const SEARCH_MENU_SELECTORS = [
+  '#search-menu',
+  '.search-menu',
+  '.header .search-menu',
+  '.d-header .search-menu',
+];
+
+// 搜索“结果列表”区域（排除历史/建议区）。不同版本可能命名不同，这里取常见候选。
+const SEARCH_RESULTS_SELECTORS = [
+  '#search-menu .results',
+  '.search-menu .results',
+  '#search-menu .search-results',
+  '.search-menu .search-results',
+  '.quick-access-panel .results',
+  '.menu-panel .results',
+  '.menu-panel .search-results',
+];
+
+export function isInSearchMenu(el: Element | null): boolean {
+  return !!closestAny(el as Element, SEARCH_MENU_SELECTORS);
+}
+
+export function isInSearchResults(el: Element | null): boolean {
+  if (!isInSearchMenu(el)) return false;
+  return !!closestAny(el as Element, SEARCH_RESULTS_SELECTORS);
+}
+
+// 仅匹配“主题帖结果项”的链接：在结果区内且 URL 路径包含 /t/
+export function isSearchResultTopicLink(a: HTMLAnchorElement): boolean {
+  if (!a) return false;
+  if (!isInSearchResults(a)) return false;
+  try {
+    const href = a.getAttribute('href') || a.href || '';
+    // 相对链接也可被浏览器补全为绝对；容错处理 pathname 提取
+    const url = new URL(href, location.href);
+    return /\/t\//.test(url.pathname || '');
+  } catch {
+    return false;
+  }
+}
+
+// “更多（更多结果）”按钮：通常指向 /search?q=...，但需限定在结果区以避免命中历史/建议
+export function isSearchResultMoreLink(a: HTMLAnchorElement): boolean {
+  if (!a) return false;
+  if (!isInSearchResults(a)) return false;
+  try {
+    const href = a.getAttribute('href') || a.href || '';
+    const url = new URL(href, location.href);
+    if (!/\/search/.test(url.pathname || '')) return false;
+    // 底部更多通常位于结果区尾部，进一步弱校验：类名/文本提示（尽量不依赖具体语言）
+    const cls = (a.className || '').toString().toLowerCase();
+    if (/more|show-more|load-more|see-more/.test(cls)) return true;
+    const text = (a.textContent || '').trim().toLowerCase();
+    if (/more|show more|更多|更多结果/.test(text)) return true;
+    // 若无明显线索，也允许在结果区内的 /search 链接作为“更多”处理
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// 从搜索结果项推断可导航的 URL：
+// - 优先读取元素及其近邻容器上的 data-url / data-topic-url
+// - 退化为 data-topic-id → "/t/<id>"
+// - 若容器内存在可见 a[href]，取其 href
+export function resolveSearchResultLink(a: HTMLAnchorElement): string | null {
+  if (!a) return null;
+  if (!isInSearchResults(a)) return null;
+
+  const attrNames = ['data-url', 'data-href', 'data-link', 'data-topic-url'];
+
+  const readAttrs = (el: Element | null): string | null => {
+    if (!el) return null;
+    for (const k of attrNames) {
+      const v = el.getAttribute?.(k);
+      if (v) return v;
+    }
+    // 以 topic id 拼 URL（Discourse 允许 /t/<id> 直接跳转）
+    const topicId = el.getAttribute?.('data-topic-id') || el.getAttribute?.('data-topicid');
+    if (topicId && /\d+/.test(topicId)) return `/t/${topicId}`;
+    return null;
+  };
+
+  // 1) 自身/父级若带有 data-url 等
+  let node: Element | null = a as Element;
+  for (let i = 0; i < 4 && node; i++) {
+    const v = readAttrs(node);
+    if (v) return v;
+    node = node.parentElement;
+  }
+
+  // 2) 结果项容器内查找 a[href]
+  const container = (a.closest?.('.search-link, .search-result, .fps-result, li, article, .search-row') || a.parentElement) as Element | null;
+  if (container) {
+    const inner = container.querySelector?.('a[href]') as HTMLAnchorElement | null;
+    if (inner && inner.getAttribute('href')) return inner.getAttribute('href');
+    const v = readAttrs(container);
+    if (v) return v;
+  }
+
+  return null;
+}
+

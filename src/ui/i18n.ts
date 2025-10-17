@@ -80,6 +80,8 @@ const translations: Record<Language, Record<string, any>> = {
           title: '弹窗',
           userCard: '用户卡片内链接用新标签页打开',
           userMenu: '用户菜单内链接用新标签页打开',
+          // 新增：搜索框结果与“更多”按钮
+          searchMenu: '搜索框链接用新标签页打开',
         },
         sidebar: {
           title: '侧边栏',
@@ -160,6 +162,8 @@ const translations: Record<Language, Record<string, any>> = {
           title: 'Popups',
           userCard: 'Open user card links in new tab',
           userMenu: 'Open user menu links in new tab',
+          // New: search popup results and "more" button
+          searchMenu: 'Open search box links in new tab',
         },
         sidebar: {
           title: 'Sidebar',

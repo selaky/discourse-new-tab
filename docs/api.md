@@ -79,7 +79,8 @@
     - `user:same-profile-keep-native`
   - 弹窗（大开关）：
     - `popup:user-card`
-    - `popup:user-menu`
+$1
+    - `popup:search-menu-results`
   - 附件：
     - `attachment:keep-native`
 
@@ -130,15 +131,19 @@
 - 解析：使用 `extractUsername` 识别用户名；同用户主页判断优先级更高（排列在后）。
 
 #### 弹窗（popup.ts）
-- 大开关仅两项：`popup:user-card` 与 `popup:user-menu`；开启时按需求改写跳转，关闭时触发与弹窗内部均保留原生。
+- 大开关三项：`popup:user-card`、`popup:user-menu`、`popup:search-menu-results`；开启时按需改写，关闭时一律保留原生。
 - 用户卡片（`popup:user-card`）：
   - 触发链接（头像/昵称）：`keep_native`（覆盖“个人主页=新标签”的规则，确保弹出卡片）
   - 卡片内任意链接：启用→`new_tab`；关闭→`keep_native`
 - 用户菜单（`popup:user-menu`）：
   - 触发链接（页头头像）：`keep_native`
   - 导航区：未激活项→`keep_native`（切换面板）；激活项再次点击→启用时 `new_tab`，关闭时 `keep_native`
-  - 内容区任意链接：启用→`new_tab`；关闭→`keep_native`
+$1
 
+- 搜索弹窗（`popup:search-menu-results`）：
+  - 作用范围：仅“搜索弹窗中的结果列表与底部‘更多’按钮”。搜索历史、建议条目（未进入结果列表时）无论开关均保持原生。
+  - 启用：`new_tab`
+  - 关闭：`keep_native`
 #### 附件（attachment.ts）
 - 规则：`attachment:keep-native`（附件/文件链接）
   - 启用：`keep_native`

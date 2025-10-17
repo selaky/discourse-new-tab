@@ -4,6 +4,7 @@ import type { MatchResult, Rule } from '../decision/types';
 import {
   RULE_POPUP_USER_CARD,
   RULE_POPUP_USER_MENU,
+  RULE_POPUP_SEARCH_MENU,
 } from '../storage/settings';
 import {
   isActiveTab,
@@ -12,6 +13,9 @@ import {
   isInUserMenuNav,
   isUserCardTrigger,
   isUserMenuTrigger,
+  isInSearchResults,
+  isSearchResultMoreLink,
+  isSearchResultTopicLink,
 } from '../utils/dom';
 
 // ——— 用户卡片 ———
@@ -127,5 +131,24 @@ export const popupRules: Rule[] = [
   ruleUserMenuNavKeepOrNew,
   ruleUserMenuNavActiveNewTab,
   ruleUserMenuContentNewTab,
+  // 搜索弹窗（结果列表与底部“更多”按钮 → 新标签；其余保持原生）
+  // 说明：搜索历史、建议项等（不在结果区内）一律不改写。
+  {
+    id: RULE_POPUP_SEARCH_MENU,
+    name: '搜索弹窗：结果与“更多”=新标签',
+    enabledAction: 'new_tab',
+    disabledAction: 'keep_native',
+    match: (ctx): MatchResult => {
+      const a = ctx.anchor;
+      if (!a) return null;
+      if (!isInSearchResults(a)) return null;
+      // 使用 targetUrl 判定，兼容无 href 的结果项
+      const p = ctx.targetUrl?.pathname || '';
+      if (/\/t\//.test(p) || p.startsWith('/search')) {
+        return { matched: true, note: '搜索弹窗结果或更多' };
+      }
+      return null;
+    },
+  },
 ];
 
