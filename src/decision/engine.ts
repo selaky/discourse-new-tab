@@ -2,6 +2,7 @@
 
 import { type Decision, type LinkContext, type Rule } from './types';
 import { getRuleEnabled } from '../storage/settings';
+import { logRuleDetail } from '../debug/logger';
 
 // 评估一组规则，返回最终动作。
 export async function evaluateRules(rules: Rule[], ctx: LinkContext): Promise<Decision> {
@@ -13,16 +14,24 @@ export async function evaluateRules(rules: Rule[], ctx: LinkContext): Promise<De
       match = rule.match(ctx);
     } catch {}
 
-    if (!match) continue; // 不匹配→跳过，符合“单条规则不匹配返回 null”
+    // 读取开关状态用于调试输出（不会影响业务逻辑）
+    const enabled = await getRuleEnabled(rule.id);
+
+    if (!match) {
+      // 调试：未命中
+      await logRuleDetail(rule, enabled, false, undefined, undefined);
+      continue; // 不匹配→跳过
+    }
 
     // 命中后，根据开关状态决定动作
-    const enabled = await getRuleEnabled(rule.id);
     const action = enabled ? rule.enabledAction : rule.disabledAction;
 
     lastDecision = {
       action,
       ruleId: rule.id,
     };
+    // 调试：命中规则细节
+    await logRuleDetail(rule, enabled, true, action, match);
     // 不提前返回，确保“靠后优先级更高”
   }
 

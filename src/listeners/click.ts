@@ -4,6 +4,7 @@ import { evaluateRules } from '../decision/engine';
 import type { LinkContext } from '../decision/types';
 import { getAllRules } from '../rules';
 import { toAbsoluteUrl } from '../utils/url';
+import { logClickFilter, logFinalDecision, logLinkInfo } from '../debug/logger';
 
 function isPlainLeftClick(ev: MouseEvent): boolean {
   return ev.button === 0 && !ev.ctrlKey && !ev.metaKey && !ev.shiftKey && !ev.altKey;
@@ -24,18 +25,22 @@ function findAnchor(el: EventTarget | null): HTMLAnchorElement | null {
 export function attachClickListener(label: string = '[discourse-new-tab]') {
   const handler = async (ev: MouseEvent) => {
     try {
-      if (!isPlainLeftClick(ev)) return; // 尊重 Ctrl/Meta/中键等用户意图
+      if (!isPlainLeftClick(ev)) {
+        await logClickFilter('非左键或组合键点击');
+        return; // 尊重 Ctrl/Meta/中键等用户意图
+      }
 
       const a = findAnchor(ev.target);
-      if (!a) return;
-      if (!a.href) return;
-      if (a.hasAttribute('download')) return; // 下载链接不拦截
-      if (a.getAttribute('data-dnt-ignore') === '1') return; // 提供逃生口
+      if (!a) { await logClickFilter('未找到 <a> 元素'); return; }
+      if (!a.href) { await logClickFilter('链接无 href'); return; }
+      if (a.hasAttribute('download')) { await logClickFilter('下载链接'); return; } // 下载链接不拦截
+      if (a.getAttribute('data-dnt-ignore') === '1') { await logClickFilter('显式忽略标记 data-dnt-ignore=1'); return; } // 提供逃生口
 
       const targetUrl = toAbsoluteUrl(a.getAttribute('href') || a.href, location.href);
-      if (!targetUrl) return;
+      if (!targetUrl) { await logClickFilter('目标 URL 解析失败'); return; }
 
       const ctx: LinkContext = { anchor: a, targetUrl, currentUrl: new URL(location.href) };
+      await logLinkInfo(ctx);
       const decision = await evaluateRules(getAllRules(), ctx);
 
       if (decision.action === 'new_tab') {
@@ -45,12 +50,15 @@ export function attachClickListener(label: string = '[discourse-new-tab]') {
         ev.stopPropagation();
         window.open(targetUrl.href, '_blank', 'noopener'); // 避免 opener 泄漏
         a.setAttribute('data-dnt-handled', '1');
+        await logFinalDecision(decision.ruleId, decision.action);
         return; // 终止后续处理
       } else if (decision.action === 'same_tab') {
         // 预留：目前未使用，未来可用作“强制同页打开”
         // ev.preventDefault(); location.assign(targetUrl.href);
+        await logFinalDecision(decision.ruleId, decision.action);
       } else {
         // keep_native：保持原生，什么都不做
+        await logFinalDecision(decision.ruleId, decision.action);
       }
     } catch (err) {
       // 出错时不影响原生行为. 这个 catch 块是必要的，以防逻辑中出现意外错误，保证不破坏页面默认行为。

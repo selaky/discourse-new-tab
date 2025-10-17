@@ -6,6 +6,7 @@ import { t } from './i18n';
 import { renderStatusSection } from './sections/status';
 import { renderDomainSection } from './sections/domain';
 import { renderRulesSection } from './sections/rules';
+import { renderDebugSection } from './sections/debug';
 
 export function createSettingsPanel(): HTMLElement {
   const overlay = document.createElement('div');
@@ -31,6 +32,9 @@ export function createSettingsPanel(): HTMLElement {
 
   // 跳转规则区域
   content.appendChild(renderRulesSection());
+
+  // 调试区域（置于末尾）
+  content.appendChild(renderDebugSection());
 
   dialog.appendChild(content);
 

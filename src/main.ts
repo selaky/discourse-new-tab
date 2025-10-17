@@ -17,6 +17,7 @@ import { attachClickListener } from './listeners/click';
   if (!isTop) return;
 
   const result = detectDiscourse();
+  await logSiteDetection(result);
 
   // 结合白/黑名单，计算最终启用状态（白 > 黑 > 自动识别）
   const host = getCurrentHostname();
@@ -33,3 +34,4 @@ import { attachClickListener } from './listeners/click';
   });
 })();
 
+import { logSiteDetection } from './debug/logger';
