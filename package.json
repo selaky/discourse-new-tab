@@ -1,6 +1,6 @@
 {
   "name": "discourse-new-tab",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "专注优化 Discourse 论坛多种情况下点击链接的体验，可在新标签页打开主题帖等页面，支持大量可自定义细节，自动识别 Discourse 站点",
   "type": "module",

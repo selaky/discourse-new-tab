@@ -124,6 +124,10 @@ All rules can be independently enabled or disabled in the settings interface. Th
 - When clicking category tabs to switch content, **keep native behavior**
 - When clicking the already-selected category icon again, open in **new tab**
 
+#### Search Box
+
+- Links in search results within the search box open in **new tab**
+
 ### Sidebar Rules
 
 - Outside topics: **keep native behavior**
@@ -142,6 +146,7 @@ Settings interface features:
 - 🚫 **Blacklist Management** - Manually add domains to force-disable the script
 - 🔄 **One-Click Add Current Domain** - Quickly add the currently visited site to whitelist or blacklist
 - ⚙️ **Navigation Rules Configuration** - Independent switches for all rules to meet personalized needs
+- 🐛 **Debug Mode** - Enable to output detailed debugging information in the console for troubleshooting
 - 🎨 **Theme Switching** - Light/Dark/Auto mode
 - 🌐 **Language Switching** - 中文/English
 
