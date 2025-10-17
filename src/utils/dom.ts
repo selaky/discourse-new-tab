@@ -10,7 +10,19 @@ export function closestAny(el: Element | null, selectors: string[]): Element | n
 }
 
 const USER_CARD_SELECTORS = ['#user-card', '.user-card', '.user-card-container'];
-const USER_MENU_SELECTORS = ['#user-menu', '.user-menu', '.user-menu-panel', '.quick-access-panel', '.menu-panel'];
+// 用户菜单选择器：需限定在 user-menu 容器内，避免将“搜索框弹窗（search quick-access）”误判为用户菜单
+// 说明：Discourse 的搜索与用户菜单都可能包含 `.quick-access-panel` / `.menu-panel`，
+// 若直接匹配这些通用类会导致搜索弹窗被识别为用户菜单。
+// 因此，这里仅匹配带有 `#user-menu`/`.user-menu` 容器作用域下的面板。
+const USER_MENU_SELECTORS = [
+  '#user-menu',
+  '.user-menu',
+  '.user-menu-panel',
+  '#user-menu .quick-access-panel',
+  '.user-menu .quick-access-panel',
+  '#user-menu .menu-panel',
+  '.user-menu .menu-panel',
+];
 const HEADER_SELECTORS = ['header', '.d-header', '#site-header'];
 const USER_MENU_NAV_SELECTORS = [
   '.user-menu .navigation',
