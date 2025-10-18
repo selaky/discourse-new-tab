@@ -35,6 +35,12 @@ const translations: Record<Language, Record<string, any>> = {
         zh: '中文',
         en: 'English',
       },
+      categories: {
+        recognition: '论坛识别',
+        rules: '跳转规则',
+        open: '打开方式',
+        debug: '调试',
+      },
       status: {
         title: '当前状态',
         domain: '当前域名',
@@ -48,7 +54,7 @@ const translations: Record<Language, Record<string, any>> = {
         },
       },
       domain: {
-        title: '论坛识别',
+        title: '黑白名单',
         whitelist: '白名单 - 强制启用脚本',
         blacklist: '黑名单 - 强制禁用脚本',
         placeholder: '输入域名',
@@ -126,6 +132,12 @@ const translations: Record<Language, Record<string, any>> = {
         zh: '中文',
         en: 'English',
       },
+      categories: {
+        recognition: 'Forum Recognition',
+        rules: 'Navigation Rules',
+        open: 'Open Behavior',
+        debug: 'Debug',
+      },
       status: {
         title: 'Current Status',
         domain: 'Current Domain',
@@ -139,7 +151,7 @@ const translations: Record<Language, Record<string, any>> = {
         },
       },
       domain: {
-        title: 'Forum Recognition',
+        title: 'Blacklist & Whitelist',
         whitelist: 'Whitelist - Force Enable Script',
         blacklist: 'Blacklist - Force Disable Script',
         placeholder: 'Enter domain',

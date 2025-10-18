@@ -1,13 +1,21 @@
-// 设置面板UI构建
+// 设置面板UI构建 - 分类布局
 import { closeSettings } from './settings';
 import { getTheme, toggleTheme, ThemeIcon } from './theme';
 import { getLanguage, toggleLanguage, LanguageIcon } from './i18n';
 import { t } from './i18n';
-import { renderStatusSection } from './sections/status';
-import { renderDomainSection } from './sections/domain';
+import { CATEGORIES, type CategoryId } from './sections/categories';
+import { renderRecognitionCategory } from './sections/recognition';
 import { renderRulesSection } from './sections/rules';
 import { renderOpenSection } from './sections/open';
 import { renderDebugSection } from './sections/debug';
+
+// 分类内容渲染映射
+const categoryRenderers: Record<CategoryId, () => HTMLElement> = {
+  recognition: renderRecognitionCategory,
+  rules: renderRulesSection,
+  open: renderOpenSection,
+  debug: renderDebugSection,
+};
 
 export function createSettingsPanel(): HTMLElement {
   const overlay = document.createElement('div');
@@ -21,27 +29,28 @@ export function createSettingsPanel(): HTMLElement {
   const header = createHeader();
   dialog.appendChild(header);
 
-  // 内容区
-  const content = document.createElement('div');
-  content.className = 'dnt-content';
+  // 主体区域 - 左右分栏
+  const body = document.createElement('div');
+  body.className = 'dnt-body';
 
-  // 状态区域
-  content.appendChild(renderStatusSection());
+  // 左侧分类导航
+  const sidebar = createSidebar();
+  body.appendChild(sidebar);
 
-  // 论坛识别区域
-  content.appendChild(renderDomainSection());
+  // 右侧内容区
+  const contentArea = document.createElement('div');
+  contentArea.className = 'dnt-content-area';
+  contentArea.id = 'dnt-content-area';
 
-  // 链接打开方式（后台打开）
-  content.appendChild(renderOpenSection());
+  // 默认显示第一个分类(论坛识别)的内容
+  const defaultRenderer = categoryRenderers['recognition'];
+  if (defaultRenderer) {
+    contentArea.appendChild(defaultRenderer());
+  }
 
-  // 跳转规则区域
-  content.appendChild(renderRulesSection());
+  body.appendChild(contentArea);
 
-  // 调试区域（置于末尾）
-  content.appendChild(renderDebugSection());
-
-  dialog.appendChild(content);
-
+  dialog.appendChild(body);
   overlay.appendChild(dialog);
 
   // 点击遮罩关闭
@@ -108,4 +117,60 @@ function createHeader(): HTMLElement {
   header.appendChild(controls);
 
   return header;
+}
+
+function createSidebar(): HTMLElement {
+  const sidebar = document.createElement('div');
+  sidebar.className = 'dnt-sidebar';
+
+  CATEGORIES.forEach((category, index) => {
+    const btn = document.createElement('button');
+    btn.className = 'dnt-category-btn';
+    btn.setAttribute('data-category', category.id);
+
+    // 第一个分类按钮默认激活
+    if (index === 0) {
+      btn.classList.add('dnt-category-active');
+    }
+
+    const icon = document.createElement('span');
+    icon.className = 'dnt-category-icon';
+    icon.innerHTML = category.icon;
+    btn.appendChild(icon);
+
+    const label = document.createElement('span');
+    label.className = 'dnt-category-label';
+    label.textContent = t(category.labelKey);
+    btn.appendChild(label);
+
+    btn.addEventListener('click', () => {
+      switchCategory(category.id);
+    });
+
+    sidebar.appendChild(btn);
+  });
+
+  return sidebar;
+}
+
+function switchCategory(categoryId: CategoryId) {
+  // 更新导航按钮状态
+  const buttons = document.querySelectorAll('.dnt-category-btn');
+  buttons.forEach((btn) => {
+    if (btn.getAttribute('data-category') === categoryId) {
+      btn.classList.add('dnt-category-active');
+    } else {
+      btn.classList.remove('dnt-category-active');
+    }
+  });
+
+  // 更新内容区
+  const contentArea = document.getElementById('dnt-content-area');
+  if (contentArea) {
+    contentArea.innerHTML = '';
+    const renderer = categoryRenderers[categoryId];
+    if (renderer) {
+      contentArea.appendChild(renderer());
+    }
+  }
 }
