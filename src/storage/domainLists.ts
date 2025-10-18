@@ -1,4 +1,5 @@
 import { gmGet, gmSet } from './gm';
+import { logError } from '../debug/logger';
 
 const KEY_WHITE = 'whitelist';
 const KEY_BLACK = 'blacklist';
@@ -14,7 +15,8 @@ function normalizeDomain(input: string): string {
       return new URL(s).hostname;
     }
     return s.split(':')[0];
-  } catch {
+  } catch (err) {
+    void logError('final', '域名规范化失败', err);
     return (input || '').trim().toLowerCase();
   }
 }
@@ -72,7 +74,8 @@ export async function removeFromBlacklist(domain: string): Promise<{ removed: bo
 export function getCurrentHostname(): string {
   try {
     return location.hostname.toLowerCase();
-  } catch {
+  } catch (err) {
+    void logError('final', '读取当前主机名失败', err);
     return '';
   }
 }

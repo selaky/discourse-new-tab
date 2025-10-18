@@ -4,7 +4,7 @@ import { evaluateRules } from '../decision/engine';
 import type { LinkContext } from '../decision/types';
 import { getAllRules } from '../rules';
 import { toAbsoluteUrl } from '../utils/url';
-import { logClickFilter, logFinalDecision, logLinkInfo, logBackgroundOpenApplied } from '../debug/logger';
+import { logClickFilter, logFinalDecision, logLinkInfo, logBackgroundOpenApplied, logError } from '../debug/logger';
 import { isInSearchResults, resolveSearchResultLink } from '../utils/dom';
 import { getBackgroundOpenMode } from '../storage/openMode';
 import { openNewTabBackground, openNewTabForeground } from '../utils/open';
@@ -72,7 +72,9 @@ export function attachClickListener(label: string = '[discourse-new-tab]') {
             await logBackgroundOpenApplied(mode === 'all' ? 'all' : 'topic');
             return; // 终止后续处理
           }
-        } catch {}
+        } catch (err) {
+          await logError('click', '读取后台打开设置失败，降级为前台', err);
+        }
 
         // 默认前台新标签（与原逻辑一致）
         openNewTabForeground(targetUrl.href); // 避免 opener 泄漏
@@ -88,7 +90,7 @@ export function attachClickListener(label: string = '[discourse-new-tab]') {
         await logFinalDecision(decision.ruleId, decision.action);
       }
     } catch (err) {
-      // 出错时不影响原生行为. 
+      await logError('click', '点击处理异常', err);
     }
   };
 

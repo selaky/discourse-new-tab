@@ -11,7 +11,7 @@ import { attachClickListener } from './listeners/click';
 (async () => {
   const label = '[discourse-new-tab]';
   const isTop = (() => {
-    try { return window.top === window; } catch { return true; }
+    try { return window.top === window; } catch (err) { void logError('site', 'window.top 访问异常，按顶层处理', err); return true; }
   })();
 
   if (!isTop) return;
@@ -34,4 +34,4 @@ import { attachClickListener } from './listeners/click';
   });
 })();
 
-import { logSiteDetection } from './debug/logger';
+import { logSiteDetection, logError } from './debug/logger';

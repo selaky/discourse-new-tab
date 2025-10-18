@@ -1,11 +1,13 @@
 // URL 工具：将 href 规范化并解析 Discourse 常见链接形态（中文注释）
+import { logError } from '../debug/logger';
 
 export function toAbsoluteUrl(href: string, base: string): URL | null {
   try {
     // 空或无效直接忽略
     if (!href || typeof href !== 'string') return null;
     return new URL(href, base);
-  } catch {
+  } catch (err) {
+    void logError('link', 'URL 绝对化失败', err);
     return null;
   }
 }
@@ -26,7 +28,7 @@ export function extractTopicId(pathname: string): number | undefined {
         if (!Number.isNaN(id)) return id;
       }
     }
-  } catch {}
+  } catch (err) { void logError('link', '解析主题帖 ID 失败', err); }
   return undefined;
 }
 
@@ -37,7 +39,7 @@ export function extractUsername(pathname: string): string | undefined {
     // /u/<username>/...
     const m = p.match(/\/u\/([\w%\-\.]+)/i);
     if (m && m[1]) return decodeURIComponent(m[1]);
-  } catch {}
+  } catch (err) { void logError('link', '解析用户名失败', err); }
   return undefined;
 }
 

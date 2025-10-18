@@ -6,6 +6,8 @@
  * - 可扩展：后续可继续增加/调整信号与权重
  */
 
+import { logError } from '../debug/logger';
+
 export type DetectResult = {
   isDiscourse: boolean;
   score: number;
@@ -52,7 +54,9 @@ export function detectDiscourse(doc: Document = document, win: Window = window):
 export function isDiscourseSite(): boolean {
   try {
     return detectDiscourse().isDiscourse;
-  } catch {
+  } catch (err) {
+    // 调试：识别过程异常
+    void logError('site', '站点识别失败', err);
     return false;
   }
 }
@@ -65,7 +69,8 @@ function metaGeneratorSignal(doc: Document): Signal {
     const content = meta?.content?.toLowerCase?.() || '';
     const matched = content.includes('discourse');
     return { name: 'meta:generator=Discourse', weight: 3, matched, note: content || undefined };
-  } catch {
+  } catch (err) {
+    void logError('site', '读取 meta[name="generator"] 失败', err);
     return { name: 'meta:generator=Discourse', weight: 3, matched: false };
   }
 }
@@ -75,7 +80,8 @@ function windowDiscourseSignal(win: Window): Signal {
     // 仅做存在性探测，不访问内部字段以避免异常
     const matched = typeof (win as any).Discourse !== 'undefined';
     return { name: 'window.Discourse 存在', weight: 3, matched };
-  } catch {
+  } catch (err) {
+    void logError('site', '探测 window.Discourse 失败', err);
     return { name: 'window.Discourse 存在', weight: 3, matched: false };
   }
 }
@@ -87,7 +93,8 @@ function metaDiscourseSpecificSignal(doc: Document): Signal {
     const hasDiscourseMeta = names.some((n) => n.startsWith('discourse_'))
       || !!doc.querySelector('meta[name="application-name"][content*="Discourse" i]');
     return { name: 'meta:discourse_* 或 application-name=Discourse', weight: 2, matched: !!hasDiscourseMeta };
-  } catch {
+  } catch (err) {
+    void logError('site', '读取 Discourse 相关 meta 失败', err);
     return { name: 'meta:discourse_* 或 application-name=Discourse', weight: 2, matched: false };
   }
 }
@@ -101,7 +108,8 @@ function domStructureSignal(doc: Document): Signal {
       doc.querySelector('meta[property="og:site_name"]')
     );
     return { name: 'DOM: #main-outlet/.topic-list/og:site_name', weight: 2, matched };
-  } catch {
+  } catch (err) {
+    void logError('site', '检查 DOM 结构失败', err);
     return { name: 'DOM: #main-outlet/.topic-list/og:site_name', weight: 2, matched: false };
   }
 }
@@ -113,7 +121,8 @@ function urlPathPatternSignal(url: string): Signal {
     const patterns = ['/t/', '/u/', '/c/', '/tags', '/latest', '/top'];
     const matched = patterns.some((s) => p.includes(s));
     return { name: 'URL 路径包含 Discourse 常见段', weight: 1, matched, note: p };
-  } catch {
+  } catch (err) {
+    void logError('site', 'URL 解析失败', err);
     return { name: 'URL 路径包含 Discourse 常见段', weight: 1, matched: false };
   }
 }

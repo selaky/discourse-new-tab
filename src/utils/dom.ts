@@ -1,4 +1,5 @@
 // 通用 DOM 工具与 Discourse 弹窗选择器（中文注释）
+import { logError } from '../debug/logger';
 
 export function closestAny(el: Element | null, selectors: string[]): Element | null {
   if (!el) return null;
@@ -133,7 +134,8 @@ export function isSearchResultTopicLink(a: HTMLAnchorElement): boolean {
     // 相对链接也可被浏览器补全为绝对；容错处理 pathname 提取
     const url = new URL(href, location.href);
     return /\/t\//.test(url.pathname || '');
-  } catch {
+  } catch (err) {
+    void logError('link', '解析搜索结果链接失败', err);
     return false;
   }
 }
@@ -153,7 +155,8 @@ export function isSearchResultMoreLink(a: HTMLAnchorElement): boolean {
     if (/more|show more|更多|更多结果/.test(text)) return true;
     // 若无明显线索，也允许在结果区内的 /search 链接作为“更多”处理
     return true;
-  } catch {
+  } catch (err) {
+    void logError('link', '解析搜索结果“更多”链接失败', err);
     return false;
   }
 }

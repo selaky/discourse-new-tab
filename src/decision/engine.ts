@@ -10,9 +10,7 @@ export async function evaluateRules(rules: Rule[], ctx: LinkContext): Promise<De
 
   for (const rule of rules) {
     let match: ReturnType<Rule['match']> = null;
-    try {
-      match = rule.match(ctx);
-    } catch {}
+    match = rule.match(ctx);
 
     // 读取开关状态用于调试输出（不会影响业务逻辑）
     const enabled = await getRuleEnabled(rule.id);
