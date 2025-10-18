@@ -41,6 +41,16 @@
   - `gmList(): Promise<string[]>`
   - `gmRegisterMenu(label: string, cb: () => void): void`
 
+## 打开行为设置（openMode）
+- 文件：`src/storage/openMode.ts`
+- 作用：控制“当决策判定为新标签页时，是否后台打开”
+- 类型：
+  - `type BackgroundOpenMode = 'none' | 'topic' | 'all'`
+- 存储键：`open:bg-mode`（默认：`'none'`）
+- 函数：
+  - `getBackgroundOpenMode(): Promise<BackgroundOpenMode>`
+  - `setBackgroundOpenMode(mode: BackgroundOpenMode): Promise<void>`
+
 ## 规则与决策
 - 文件：
   - `src/decision/types.ts`：动作与规则类型定义
@@ -169,7 +179,13 @@ $1
   - 定位 `<a>`：向上遍历 `tagName === 'A'`，避免跨 realm `instanceof` 问题。
   - 对 `download` 或 `data-dnt-ignore="1"` 的链接不拦截。
   - 将 `href` 规范化为绝对 URL，构造 `LinkContext` 并调用决策引擎。
-  - 当决策为 `new_tab`：`preventDefault()` + `stopImmediatePropagation()` + `stopPropagation()`，并 `window.open(url, '_blank', 'noopener')`，防止旧标签页跟随跳转。
+  - 当决策为 `new_tab`：
+    - 进行“后台打开”二次判定：
+      - `open:bg-mode = 'all'` → 后台打开
+      - `open:bg-mode = 'topic'` 且目标为主题帖 → 后台打开
+      - 其他情况 → 前台新标签页
+    - 后台打开实现：优先 `GM.openInTab(url, { active: false })` / `GM_openInTab(url, { active: false })`；均不可用时降级 `window.open(url, '_blank', 'noopener')`
+  - 日志：在“最终规则与动作”日志后追加“后台打开：仅主题帖/全部”
   - 其它动作：保持原生（`keep_native`）或保留为将来的 `same_tab`（未启用）。
   - 捕获阶段注册监听，尽早拦截站点脚本。
 
@@ -209,4 +225,5 @@ $1
 - 性能与安全：
   - 点击拦截与判断逻辑保持轻量；仅在需要时创建新 URL 或进行少量 DOM 查询。
   - `window.open(..., 'noopener')`，避免 `opener` 泄露。
+  - 建议在元数据中声明 `@grant GM.openInTab` 与 `@grant GM_openInTab` 以启用后台打开能力（管理器不支持时将自动降级）。
 

@@ -6,6 +6,7 @@ import { t } from './i18n';
 import { renderStatusSection } from './sections/status';
 import { renderDomainSection } from './sections/domain';
 import { renderRulesSection } from './sections/rules';
+import { renderOpenSection } from './sections/open';
 import { renderDebugSection } from './sections/debug';
 
 export function createSettingsPanel(): HTMLElement {
@@ -29,6 +30,9 @@ export function createSettingsPanel(): HTMLElement {
 
   // 论坛识别区域
   content.appendChild(renderDomainSection());
+
+  // 链接打开方式（后台打开）
+  content.appendChild(renderOpenSection());
 
   // 跳转规则区域
   content.appendChild(renderRulesSection());

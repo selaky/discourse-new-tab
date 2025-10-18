@@ -89,6 +89,15 @@ const translations: Record<Language, Record<string, any>> = {
           inTopicNewTab: '主题帖内侧边栏用新标签页打开',
         },
       },
+      openMode: {
+        title: '链接打开方式',
+        selectLabel: '后台打开新标签页',
+        options: {
+          none: '无',
+          topic: '仅主题帖',
+          all: '全部',
+        },
+      },
       debug: {
         title: '调试',
         enable: '调试模式',
@@ -169,6 +178,15 @@ const translations: Record<Language, Record<string, any>> = {
           title: 'Sidebar',
           nonTopicKeepNative: 'Keep native behavior in non-topic pages',
           inTopicNewTab: 'Open sidebar links in new tab within topics',
+        },
+      },
+      openMode: {
+        title: 'Open Behavior',
+        selectLabel: 'Open new tabs in background',
+        options: {
+          none: 'None',
+          topic: 'Topics only',
+          all: 'All',
         },
       },
       debug: {

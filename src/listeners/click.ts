@@ -4,8 +4,11 @@ import { evaluateRules } from '../decision/engine';
 import type { LinkContext } from '../decision/types';
 import { getAllRules } from '../rules';
 import { toAbsoluteUrl } from '../utils/url';
-import { logClickFilter, logFinalDecision, logLinkInfo } from '../debug/logger';
+import { logClickFilter, logFinalDecision, logLinkInfo, logBackgroundOpenApplied } from '../debug/logger';
 import { isInSearchResults, resolveSearchResultLink } from '../utils/dom';
+import { getBackgroundOpenMode } from '../storage/openMode';
+import { openNewTabBackground, openNewTabForeground } from '../utils/open';
+import { extractTopicId } from '../utils/url';
 
 function isPlainLeftClick(ev: MouseEvent): boolean {
   return ev.button === 0 && !ev.ctrlKey && !ev.metaKey && !ev.shiftKey && !ev.altKey;
@@ -56,7 +59,23 @@ export function attachClickListener(label: string = '[discourse-new-tab]') {
         ev.preventDefault();
         ev.stopImmediatePropagation();
         ev.stopPropagation();
-        window.open(targetUrl.href, '_blank', 'noopener'); // 避免 opener 泄漏
+
+        // 二次判定：是否按用户设置后台打开
+        try {
+          const mode = await getBackgroundOpenMode();
+          const isTopic = extractTopicId(targetUrl.pathname) != null;
+          const useBg = (mode === 'all') || (mode === 'topic' && isTopic);
+          if (useBg) {
+            openNewTabBackground(targetUrl.href);
+            a.setAttribute('data-dnt-handled', '1');
+            await logFinalDecision(decision.ruleId, decision.action);
+            await logBackgroundOpenApplied(mode === 'all' ? 'all' : 'topic');
+            return; // 终止后续处理
+          }
+        } catch {}
+
+        // 默认前台新标签（与原逻辑一致）
+        openNewTabForeground(targetUrl.href); // 避免 opener 泄漏
         a.setAttribute('data-dnt-handled', '1');
         await logFinalDecision(decision.ruleId, decision.action);
         return; // 终止后续处理
@@ -69,7 +88,7 @@ export function attachClickListener(label: string = '[discourse-new-tab]') {
         await logFinalDecision(decision.ruleId, decision.action);
       }
     } catch (err) {
-      // 出错时不影响原生行为. 这个 catch 块是必要的，以防逻辑中出现意外错误，保证不破坏页面默认行为。
+      // 出错时不影响原生行为. 
     }
   };
 

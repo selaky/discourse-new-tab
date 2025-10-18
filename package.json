@@ -40,7 +40,9 @@
     "grant": [
       "GM_getValue",
       "GM_setValue",
-      "GM_registerMenuCommand"
+      "GM_registerMenuCommand",
+      "GM.openInTab",
+      "GM_openInTab"
     ],
     "run-at": "document-start",
     "homepageURL": "https://github.com/selaky/discourse-new-tab",

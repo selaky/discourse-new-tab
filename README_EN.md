@@ -26,6 +26,7 @@ English | [简体中文](README.md)
 Have you ever encountered these issues?
 
 - Used to opening topics in new tabs, but don't want to load and switch within the same page?
+- Don't want to wait for the post to load? Want to keep browsing the homepage and pre-load the next post while the previous one is loading?
 - Tired of manually holding Ctrl or middle-clicking links every time you browse forums?
 - Asked for a script that automatically opens links in new tabs, only to be told "it's not necessary"?
 - Tried other similar scripts, but they always felt off?
@@ -65,6 +66,7 @@ The settings interface is aesthetically pleasing, supports dark mode and languag
 - 🎨 **Beautiful Interface** - Settings interface supports light/dark/auto night mode
 - 🌍 **Multi-Language** - Supports Chinese and English interface switching
 - ⚡ **Ultimate Performance** - No perceptible difference in browsing experience before and after installation
+- 🧩 **Background Open Option** - Optionally open "new tabs" in background (None/Topics/All)
 
 ## Installation
 
@@ -90,6 +92,7 @@ After installing the userscript manager, click one of the links below to install
 3. In the settings interface, you can:
    - View the activation status of the current domain
    - Manage whitelist and blacklist
+   - Configure "Open new tabs in background"
    - Customize various navigation rules
 
 ## Detailed Rules
@@ -214,13 +217,6 @@ npm run clean
 ```
 
 The built script is located at `dist/discourse-new-tab.user.js` and can be installed directly in your userscript manager for testing.
-
-### Code Standards
-
-- Modular development, maintain high cohesion and low coupling
-- Focus on performance, avoid unnecessary DOM operations
-- Unified navigation handling logic
-- Detailed code comments
 
 ## Acknowledgements
 

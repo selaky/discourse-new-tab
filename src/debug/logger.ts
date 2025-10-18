@@ -86,6 +86,15 @@ export async function logFinalDecision(ruleId: string, action: Action) {
   } catch {}
 }
 
+// 后台打开新标签页：补充日志（复用 final 分类）
+export async function logBackgroundOpenApplied(mode: 'topic' | 'all') {
+  if (!(await shouldLog('final'))) return;
+  try {
+    const m = mode === 'all' ? '全部' : '仅主题帖';
+    console.log(`${DEBUG_LABEL} 后台打开：${m}`);
+  } catch {}
+}
+
 // 将对象压缩为简短的内联文本
 function safeInline(obj: Record<string, any>): string {
   try {
