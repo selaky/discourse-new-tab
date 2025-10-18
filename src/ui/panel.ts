@@ -90,8 +90,7 @@ function createHeader(): HTMLElement {
     langBtn.innerHTML = LanguageIcon[getLanguage()];
     // 刷新整个面板以更新所有文本
     closeSettings();
-    const { openSettings } = require('./settings');
-    openSettings();
+    import('./settings').then(({ openSettings }) => openSettings());
   });
   controls.appendChild(langBtn);
 
