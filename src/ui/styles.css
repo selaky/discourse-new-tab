@@ -45,19 +45,19 @@
   --dnt-text-muted: #888888;
 
   --dnt-border: #404040;
-  --dnt-border-focus: #67c23a;
+  --dnt-border-focus: #4a9e2a;
 
-  --dnt-primary: #67c23a;
-  --dnt-primary-hover: #85ce61;
-  --dnt-danger: #f56c6c;
-  --dnt-danger-hover: #f78989;
+  --dnt-primary: #4a9e2a;
+  --dnt-primary-hover: #5fb83a;
+  --dnt-danger: #d85a5a;
+  --dnt-danger-hover: #e67272;
 
-  --dnt-badge-auto: #409eff;
-  --dnt-badge-whitelist: #67c23a;
-  --dnt-badge-blacklist: #f56c6c;
+  --dnt-badge-auto: #3b7fb8;
+  --dnt-badge-whitelist: #4a9e2a;
+  --dnt-badge-blacklist: #d85a5a;
   --dnt-badge-disabled: #909399;
 
-  --dnt-toggle-on: #67c23a;
+  --dnt-toggle-on: #4a9e2a;
   --dnt-toggle-off: #4a4a4a;
   --dnt-toggle-thumb: #ffffff;
 
