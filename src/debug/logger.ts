@@ -4,6 +4,7 @@ import type { DetectResult } from '../detectors/siteDetector';
 import type { LinkContext, MatchResult, Action } from '../decision/types';
 import type { Rule } from '../decision/types';
 import { getDebugEnabled, getDebugCategories, DEBUG_LABEL, type DebugCategory } from './settings';
+import type { BackgroundOpenMode } from '../storage/openMode';
 import { extractTopicId, extractUsername } from '../utils/url';
 
 // 内部帮助：判断某分类是否应该输出
@@ -98,4 +99,17 @@ function safeInline(obj: Record<string, any>): string {
 export async function logError(category: DebugCategory, message: string, err?: unknown) {
   if (!(await shouldLog(category))) return;
   console.error(`${DEBUG_LABEL} 错误：${message}`, err);
+}
+
+// —— 后台打开（浮球）专栏 ——
+export async function logBgBallVisibility(visible: boolean) {
+  if (!(await shouldLog('bg'))) return;
+  console.log(`${DEBUG_LABEL} 悬浮球：${visible ? '显示' : '隐藏'}`);
+}
+
+export async function logBgModeChange(mode: BackgroundOpenMode, source: 'ball' | 'settings') {
+  if (!(await shouldLog('bg'))) return;
+  const m = mode === 'all' ? '全部' : mode === 'topic' ? '仅主题帖' : '无';
+  const s = source === 'ball' ? '悬浮球' : '设置';
+  console.log(`${DEBUG_LABEL} 后台打开切换（${s}）：${m}`);
 }

@@ -51,6 +51,22 @@
   - `getBackgroundOpenMode(): Promise<BackgroundOpenMode>`
   - `setBackgroundOpenMode(mode: BackgroundOpenMode): Promise<void>`
 
+### 悬浮球（Float Ball）
+- 文件：`src/floatball/index.ts`、`src/storage/floatBall.ts`
+- 作用：在页面右侧提供可拖拽悬浮球，单击在可选集合中切换“后台打开”模式
+- 存储：
+  - `ui:floatball:enabled: boolean`（默认 `true`）
+  - `ui:floatball:fixed: boolean`（默认 `false`）
+  - `ui:floatball:pos: { xRatio: number; yRatio: number }`（默认靠右侧中上）
+  - `ui:floatball:allowed-modes: { none: boolean; topic: boolean; all: boolean }`（默认全开，至少保持两项）
+- 公开函数：
+  - `initFloatBall(): Promise<void>`（按设置决定是否挂载）
+  - `setFloatBallShown(on: boolean): Promise<void>`（实时显示/隐藏）
+  - `setFloatBallFixedMode(on: boolean): Promise<void>`（实时固定/解锁拖动）
+  - `resetFloatBallPosition(): Promise<void>`（位置重置）
+  - `updateAllowedModes(next): Promise<void>`（更新允许集合）
+  - `syncCurrentModeFromStorage(): Promise<void>`（当设置页修改 `open:bg-mode` 时刷新图标/颜色）
+
 ## 规则与决策
 - 文件：
   - `src/decision/types.ts`：动作与规则类型定义

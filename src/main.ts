@@ -25,6 +25,13 @@ import { attachClickListener } from './listeners/click';
   // 启用时挂载点击监听（统一由规则引擎决策是否新标签或保留原生）
   if (enable.enabled) {
     attachClickListener(label);
+    // 悬浮球：初始化（按设置决定是否显示）
+    try {
+      const { initFloatBall } = await import('./floatball');
+      await initFloatBall();
+    } catch (err) {
+      void logError('bg', '悬浮球初始化失败', err);
+    }
   }
 
   // 设置入口 - 打开设置界面

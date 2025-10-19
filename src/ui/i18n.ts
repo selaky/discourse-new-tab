@@ -103,6 +103,12 @@ const translations: Record<Language, Record<string, any>> = {
           topic: '仅主题帖',
           all: '全部',
         },
+        floatball: {
+          show: '显示前后台切换悬浮球（默认打开）',
+          reset: '重置悬浮球位置',
+          fixed: '固定悬浮球位置',
+          modes: '可通过悬浮球切换的类型（至少选择两个）',
+        },
       },
       debug: {
         title: '调试',
@@ -115,6 +121,7 @@ const translations: Record<Language, Record<string, any>> = {
           link: '链接信息',
           rules: '规则细节',
           final: '最终规则与动作',
+          bg: '后台打开',
         },
       },
     },
@@ -200,6 +207,12 @@ const translations: Record<Language, Record<string, any>> = {
           topic: 'Topics only',
           all: 'All',
         },
+        floatball: {
+          show: 'Show the front/background toggle float ball (on by default)',
+          reset: 'Reset float ball position',
+          fixed: 'Pin float ball position',
+          modes: 'Modes switchable via float ball (select at least two)',
+        },
       },
       debug: {
         title: 'Debug',
@@ -212,6 +225,7 @@ const translations: Record<Language, Record<string, any>> = {
           link: 'Link Info',
           rules: 'Rule Details',
           final: 'Final Rule & Action',
+          bg: 'Background Open',
         },
       },
     },

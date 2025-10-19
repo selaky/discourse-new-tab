@@ -2,7 +2,7 @@
 
 import { gmGet, gmSet } from '../storage/gm';
 
-export type DebugCategory = 'site' | 'click' | 'link' | 'rules' | 'final';
+export type DebugCategory = 'site' | 'click' | 'link' | 'rules' | 'final' | 'bg';
 
 export const DEBUG_LABEL = '[discourse-new-tab]';
 
@@ -16,6 +16,7 @@ export const DEFAULT_DEBUG_CATEGORIES: Record<DebugCategory, boolean> = {
   link: true,
   rules: true,
   final: true,
+  bg: true,
 };
 
 export async function getDebugEnabled(): Promise<boolean> {
@@ -45,6 +46,7 @@ export async function setAllDebugCategories(enabled: boolean): Promise<void> {
     link: enabled,
     rules: enabled,
     final: enabled,
+    bg: enabled,
   };
   await gmSet(KEY_DEBUG_CATEGORIES, all);
 }

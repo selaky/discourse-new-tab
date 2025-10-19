@@ -9,7 +9,7 @@ import {
   setAllDebugCategories,
 } from '../../debug/settings';
 
-type CatKey = 'site' | 'click' | 'link' | 'rules' | 'final';
+type CatKey = 'site' | 'click' | 'link' | 'rules' | 'final' | 'bg';
 
 export function renderDebugSection(): HTMLElement {
   const section = document.createElement('div');
@@ -68,6 +68,7 @@ export function renderDebugSection(): HTMLElement {
     { key: 'link', label: t('settings.debug.categories.link') },
     { key: 'rules', label: t('settings.debug.categories.rules') },
     { key: 'final', label: t('settings.debug.categories.final') },
+    { key: 'bg', label: t('settings.debug.categories.bg') },
   ];
 
   const listBlock = document.createElement('div');
