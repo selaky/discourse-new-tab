@@ -99,3 +99,43 @@ export function gmRegisterMenu(label: string, cb: () => void) {
   // 无法注册菜单时不抛错（某些管理器不支持），降级为 no-op
 }
 
+// 订阅值变化（跨标签页同步），返回取消函数
+export function gmOnValueChange<T>(key: string, handler: (oldVal: T | undefined, newVal: T | undefined, remote: boolean) => void): () => void {
+  // 优先使用 Tampermonkey/Violentmonkey 提供的跨脚本存储监听
+  try {
+    const addLegacy: AnyFunc | undefined = (globalThis as any).GM_addValueChangeListener;
+    if (typeof addLegacy === 'function') {
+      const id = addLegacy(key, (_k: string, oldV: T, newV: T, remote: boolean) => handler(oldV, newV, remote));
+      return () => {
+        try {
+          const rm: AnyFunc | undefined = (globalThis as any).GM_removeValueChangeListener;
+          if (typeof rm === 'function') rm(id);
+        } catch (err) { console.warn(LABEL, 'GM_removeValueChangeListener 失败', err); }
+      };
+    }
+    const GM: any = (globalThis as any).GM;
+    if (GM?.addValueChangeListener) {
+      const id = GM.addValueChangeListener(key, (_k: string, oldV: T, newV: T, remote: boolean) => handler(oldV, newV, remote));
+      return () => { try { GM.removeValueChangeListener?.(id); } catch (err) { console.warn(LABEL, 'GM.removeValueChangeListener 失败', err); } };
+    }
+  } catch (err) { console.warn(LABEL, 'GM_valueChangeListener 不可用，降级为 storage 事件', err); }
+
+  // 降级：使用 storage 事件（同源标签页才会收到）
+  try {
+    const storageKey = `dnt:${key}`;
+    const listener = (e: StorageEvent) => {
+      if (e.key !== storageKey) return;
+      let ov: T | undefined = undefined;
+      let nv: T | undefined = undefined;
+      try { ov = e.oldValue != null ? JSON.parse(e.oldValue) as T : undefined; } catch {}
+      try { nv = e.newValue != null ? JSON.parse(e.newValue) as T : undefined; } catch {}
+      handler(ov, nv, true);
+    };
+    window.addEventListener('storage', listener);
+    return () => window.removeEventListener('storage', listener);
+  } catch (err) {
+    console.warn(LABEL, 'storage 事件监听失败', err);
+    return () => {};
+  }
+}
+

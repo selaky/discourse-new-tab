@@ -21,6 +21,9 @@ import {
   type AllowedModes,
 } from '../storage/floatBall';
 import { gmGet } from '../storage/gm';
+import { gmOnValueChange } from '../storage/gm';
+import type { FloatBallPos } from '../storage/floatBall';
+import { __keys as FB_KEYS } from '../storage/floatBall';
 import { t } from '../ui/i18n';
 import { logBgBallVisibility, logBgModeChange, logError } from '../debug/logger';
 
@@ -33,6 +36,7 @@ let dragStart: { x: number; y: number; left: number; top: number } | null = null
 let fixed = false;
 let allowed: AllowedModes = { none: true, topic: true, all: true };
 let curMode: BackgroundOpenMode = 'none';
+let unsubPos: (() => void) | null = null;
 
 // 拖动与点击判定阈值（像素）
 const DRAG_THRESHOLD = 5;
@@ -238,6 +242,12 @@ async function mount() {
 
   observeTheme();
   window.addEventListener('resize', onWindowResize);
+  // 跨页面同步位置变化
+  if (unsubPos) { try { unsubPos(); } catch {} ; unsubPos = null; }
+  unsubPos = gmOnValueChange<FloatBallPos>(FB_KEYS.KEY_FB_POS, (_oldV, newV) => {
+    if (!rootEl || !newV) return;
+    setElPosFromRatio(rootEl, newV);
+  });
   await logBgBallVisibility(true);
 }
 
@@ -246,6 +256,7 @@ async function unmount() {
   window.removeEventListener('resize', onWindowResize);
   window.removeEventListener('mousemove', onMouseMove);
   window.removeEventListener('mouseup', onMouseUp);
+  if (unsubPos) { try { unsubPos(); } catch {} ; unsubPos = null; }
   rootEl.remove();
   rootEl = null;
   iconEl = null;
