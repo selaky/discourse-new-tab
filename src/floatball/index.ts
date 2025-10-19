@@ -140,8 +140,9 @@ async function cycleMode() {
 }
 
 function onMouseDown(ev: MouseEvent) {
-  if (!rootEl || fixed) return;
-  dragging = true;
+  if (!rootEl) return;
+  // 固定状态下记录按下起点用于点击判定，但不进入拖拽
+  dragging = !fixed;
   const rect = rootEl.getBoundingClientRect();
   dragStart = { x: ev.clientX, y: ev.clientY, left: rect.left, top: rect.top };
 }
@@ -162,13 +163,15 @@ async function onMouseUp(ev: MouseEvent) {
   const dy = Math.abs(ev.clientY - dragStart.y);
   const wasDragging = dragging && (dx > DRAG_THRESHOLD || dy > DRAG_THRESHOLD);
   dragging = false;
+  if (wasDragging) {
   const rect = rootEl.getBoundingClientRect();
   // 保存为视口比例
   const xRatio = (rect.left + SIZE / 2) / window.innerWidth;
   const yRatio = (rect.top + SIZE / 2) / window.innerHeight;
   await setFloatBallPos({ xRatio, yRatio });
+  }
   dragStart = null;
-  if (!wasDragging && !fixed) {
+  if (!wasDragging) {
     // 作为点击处理（避免与拖动混淆）
     await cycleMode();
   }
