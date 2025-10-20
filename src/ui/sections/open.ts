@@ -20,7 +20,7 @@ export function renderOpenSection(): HTMLElement {
   const infoBox = createInfoBox(t('settings.openMode.description'));
   section.appendChild(infoBox);
 
-  // 默认模式 - 分段控制器
+  // 当前模式 - 分段控制器
   const modeBlock = document.createElement('div');
   modeBlock.className = 'dnt-list-block';
   modeBlock.style.marginTop = '16px';
@@ -35,15 +35,26 @@ export function renderOpenSection(): HTMLElement {
 
   section.appendChild(modeBlock);
 
-  // 悬浮球设置区域
-  const floatballBlock = document.createElement('div');
-  floatballBlock.className = 'dnt-list-block';
-  floatballBlock.style.marginTop = '16px';
+  // 悬浮球设置 - 大标题样式
+  const floatballTitle = document.createElement('h3');
+  floatballTitle.className = 'dnt-section-title';
+  floatballTitle.textContent = t('settings.openMode.floatball.title');
+  floatballTitle.style.marginTop = '32px';
+  section.appendChild(floatballTitle);
 
-  const fbTitle = document.createElement('div');
-  fbTitle.className = 'dnt-list-subtitle';
-  fbTitle.textContent = t('settings.openMode.floatball.title');
-  floatballBlock.appendChild(fbTitle);
+  // 悬浮球提示文本
+  const floatballTip = createInfoBox(t('settings.openMode.floatball.tip'));
+  section.appendChild(floatballTip);
+
+  // === 显示设置 ===
+  const displayBlock = document.createElement('div');
+  displayBlock.className = 'dnt-list-block';
+  displayBlock.style.marginTop = '16px';
+
+  const displayTitle = document.createElement('div');
+  displayTitle.className = 'dnt-list-subtitle';
+  displayTitle.textContent = t('settings.openMode.floatball.displayTitle');
+  displayBlock.appendChild(displayTitle);
 
   // 显示悬浮球开关
   const showRow = createToggleRow(
@@ -54,7 +65,7 @@ export function renderOpenSection(): HTMLElement {
       await setFloatBallShown(on);
     }
   );
-  floatballBlock.appendChild(showRow.row);
+  displayBlock.appendChild(showRow.row);
 
   // 固定位置开关
   const fixedRow = createToggleRow(
@@ -65,7 +76,7 @@ export function renderOpenSection(): HTMLElement {
       await setFloatBallFixedMode(on);
     }
   );
-  floatballBlock.appendChild(fixedRow.row);
+  displayBlock.appendChild(fixedRow.row);
 
   // 重置位置按钮
   const resetRow = document.createElement('div');
@@ -77,26 +88,38 @@ export function renderOpenSection(): HTMLElement {
     await resetFloatBallPosition();
   });
   resetRow.appendChild(resetBtn);
-  floatballBlock.appendChild(resetRow);
+  displayBlock.appendChild(resetRow);
+
+  section.appendChild(displayBlock);
+
+  // === 切换设置 ===
+  const switchBlock = document.createElement('div');
+  switchBlock.className = 'dnt-list-block';
+  switchBlock.style.marginTop = '16px';
+
+  const switchTitle = document.createElement('div');
+  switchTitle.className = 'dnt-list-subtitle';
+  switchTitle.textContent = t('settings.openMode.floatball.switchTitle');
+  switchBlock.appendChild(switchTitle);
 
   // 可切换模式 - 卡片选择器
   const modesLabel = document.createElement('div');
   modesLabel.className = 'dnt-subsection-label';
   modesLabel.textContent = t('settings.openMode.floatball.modes');
-  modesLabel.style.marginTop = '20px';
+  modesLabel.style.marginTop = '12px';
   modesLabel.style.marginBottom = '8px';
-  floatballBlock.appendChild(modesLabel);
+  switchBlock.appendChild(modesLabel);
 
   const modesDesc = document.createElement('div');
   modesDesc.className = 'dnt-hint-text';
   modesDesc.textContent = t('settings.openMode.floatball.modesDesc');
   modesDesc.style.marginBottom = '12px';
-  floatballBlock.appendChild(modesDesc);
+  switchBlock.appendChild(modesDesc);
 
   const modeCards = createModeCardSelector();
-  floatballBlock.appendChild(modeCards.container);
+  switchBlock.appendChild(modeCards.container);
 
-  section.appendChild(floatballBlock);
+  section.appendChild(switchBlock);
 
   // 初始化数据回填
   (async () => {

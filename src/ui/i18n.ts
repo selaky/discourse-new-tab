@@ -38,7 +38,7 @@ const translations: Record<Language, Record<string, any>> = {
       categories: {
         recognition: '论坛识别',
         rules: '跳转规则',
-        open: '打开方式',
+        open: '后台打开',
         debug: '调试',
       },
       status: {
@@ -96,9 +96,9 @@ const translations: Record<Language, Record<string, any>> = {
         },
       },
       openMode: {
-        title: '后台打开',
+        title: '打开方式',
         description: '后台打开是指在新标签页打开链接时,保持当前页面为活动标签,新标签在后台打开',
-        selectLabel: '默认模式',
+        selectLabel: '当前模式',
         options: {
           none: '前台打开',
           topic: '主题帖后台',
@@ -111,6 +111,9 @@ const translations: Record<Language, Record<string, any>> = {
         },
         floatball: {
           title: '悬浮球设置',
+          tip: '若需要经常切换前后台打开方式,可开启悬浮球,随时点击切换',
+          displayTitle: '显示设置',
+          switchTitle: '切换设置',
           show: '显示悬浮球',
           showDesc: '在页面上显示快速切换按钮',
           reset: '重置位置',
@@ -152,7 +155,7 @@ const translations: Record<Language, Record<string, any>> = {
       categories: {
         recognition: 'Forum Recognition',
         rules: 'Navigation Rules',
-        open: 'Open Behavior',
+        open: 'Background Open',
         debug: 'Debug',
       },
       status: {
@@ -210,9 +213,9 @@ const translations: Record<Language, Record<string, any>> = {
         },
       },
       openMode: {
-        title: 'Background Open',
+        title: 'Open Behavior',
         description: 'Background open means opening links in a new tab while keeping the current page active, with the new tab opened in the background',
-        selectLabel: 'Default Mode',
+        selectLabel: 'Current Mode',
         options: {
           none: 'Foreground',
           topic: 'Topics Background',
@@ -225,6 +228,9 @@ const translations: Record<Language, Record<string, any>> = {
         },
         floatball: {
           title: 'Float Ball Settings',
+          tip: 'If you need to frequently switch between foreground/background modes, enable the float ball to toggle anytime',
+          displayTitle: 'Display Settings',
+          switchTitle: 'Switch Settings',
           show: 'Show Float Ball',
           showDesc: 'Display quick toggle button on page',
           reset: 'Reset Position',
