@@ -611,4 +611,265 @@
   .dnt-content-area {
     padding: 12px;
   }
+
+  /* 移动端卡片调整 */
+  .dnt-mode-cards {
+    flex-direction: column;
+  }
+
+  .dnt-mode-card {
+    width: 100%;
+  }
+
+  .dnt-segmented-control {
+    flex-direction: column;
+  }
+
+  .dnt-segment-btn {
+    width: 100%;
+  }
+}
+
+/* ========== 新增: 后台打开UI组件样式 ========== */
+
+/* 信息提示框 */
+.dnt-info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--dnt-bg-section);
+  border-left: 3px solid var(--dnt-primary);
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.dnt-info-icon {
+  flex-shrink: 0;
+  color: var(--dnt-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.dnt-info-text {
+  flex: 1;
+  color: var(--dnt-text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* 分段控制器 */
+.dnt-segmented-control {
+  display: flex;
+  gap: 0;
+  background: var(--dnt-bg-section);
+  border: 1px solid var(--dnt-border);
+  border-radius: 6px;
+  padding: 4px;
+  margin-top: 8px;
+}
+
+.dnt-segment-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: var(--dnt-text-secondary);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  min-height: 52px;
+}
+
+.dnt-segment-btn:hover {
+  background: var(--dnt-bg-hover);
+  color: var(--dnt-text-primary);
+}
+
+.dnt-segment-btn:focus-visible {
+  box-shadow: 0 0 0 2px var(--dnt-border-focus);
+}
+
+.dnt-segment-active {
+  background: var(--dnt-primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dnt-segment-label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.dnt-segment-desc {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.dnt-segment-active .dnt-segment-desc {
+  opacity: 0.95;
+}
+
+/* 开关行（带说明文本） */
+.dnt-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--dnt-border);
+}
+
+.dnt-toggle-row:last-child {
+  border-bottom: none;
+}
+
+.dnt-toggle-label-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dnt-toggle-label {
+  color: var(--dnt-text-primary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.dnt-toggle-desc {
+  color: var(--dnt-text-secondary);
+  font-size: 12px;
+}
+
+/* 子标题 */
+.dnt-subsection-label {
+  color: var(--dnt-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dnt-hint-text {
+  color: var(--dnt-text-muted);
+  font-size: 12px;
+}
+
+/* 模式卡片选择器 */
+.dnt-mode-cards {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dnt-mode-card {
+  flex: 1;
+  min-width: 140px;
+  position: relative;
+  cursor: pointer;
+  display: block;
+}
+
+.dnt-mode-card-checkbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dnt-mode-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 12px;
+  background: var(--dnt-bg-input);
+  border: 2px solid var(--dnt-border);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.dnt-mode-card:hover .dnt-mode-card-content {
+  border-color: var(--dnt-primary);
+  background: var(--dnt-bg-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.dnt-mode-card-checked .dnt-mode-card-content {
+  border-color: var(--dnt-primary);
+  background: var(--dnt-bg-dialog);
+  box-shadow: 0 2px 8px rgba(103, 194, 58, 0.15);
+}
+
+.dnt-mode-card-icon {
+  color: var(--dnt-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.dnt-mode-card-checked .dnt-mode-card-icon {
+  color: var(--dnt-primary);
+}
+
+.dnt-mode-card-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dnt-text-primary);
+  text-align: center;
+}
+
+.dnt-mode-card-desc {
+  font-size: 11px;
+  color: var(--dnt-text-secondary);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.dnt-mode-card-checkmark {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: var(--dnt-primary);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dnt-mode-card-checked .dnt-mode-card-checkmark {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 最少需要两个的视觉提示 */
+.dnt-mode-card-min-required .dnt-mode-card-content {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.dnt-mode-card-min-required .dnt-mode-card-content::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px solid var(--dnt-primary);
+  border-radius: 8px;
+  pointer-events: none;
+  animation: pulse-border 2s ease-in-out infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
 }

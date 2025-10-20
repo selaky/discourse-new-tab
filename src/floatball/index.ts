@@ -37,6 +37,7 @@ let fixed = false;
 let allowed: AllowedModes = { none: true, topic: true, all: true };
 let curMode: BackgroundOpenMode = 'none';
 let unsubPos: (() => void) | null = null;
+let rafId: number | null = null;
 
 // 拖动与点击判定阈值（像素）
 const DRAG_THRESHOLD = 5;
@@ -63,13 +64,91 @@ function ensureStyle() {
   const s = document.createElement('style');
   s.id = 'dnt-fb-style';
   s.textContent = `
-  .dnt-fb{position:fixed;z-index:2147483646; width:${SIZE}px;height:${SIZE}px; border-radius:50%; display:flex;align-items:center;justify-content:center; cursor:pointer; user-select:none; box-shadow:0 4px 12px rgba(0,0,0,.18); border:1px solid rgba(0,0,0,.08); backdrop-filter:saturate(120%) blur(0px)}
-  .dnt-fb-dark{box-shadow:0 4px 16px rgba(0,0,0,.5); border-color:rgba(255,255,255,.06)}
-  .dnt-fb:hover{transform:scale(1.05)}
-  .dnt-fb-fixed{cursor:default}
-  .dnt-fb-icon{color:#fff; line-height:0}
-  .dnt-fb-tip{position:absolute; bottom:${SIZE + 6}px; white-space:nowrap; font-size:12px; background:rgba(0,0,0,.72); color:#fff; padding:4px 8px; border-radius:4px; pointer-events:none; display:none}
-  .dnt-fb:hover .dnt-fb-tip{display:block}
+  .dnt-fb {
+    position: fixed;
+    z-index: 2147483646;
+    width: ${SIZE}px;
+    height: ${SIZE}px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px) saturate(150%);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+    will-change: transform;
+  }
+  .dnt-fb-dark {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 2px 10px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  .dnt-fb:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), 0 3px 10px rgba(0, 0, 0, 0.12);
+  }
+  .dnt-fb-dark:hover {
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5), 0 3px 12px rgba(0, 0, 0, 0.35);
+  }
+  .dnt-fb-dragging {
+    transform: scale(1.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: grabbing !important;
+  }
+  .dnt-fb-dark.dnt-fb-dragging {
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6), 0 4px 14px rgba(0, 0, 0, 0.4);
+  }
+  .dnt-fb-fixed {
+    cursor: default;
+  }
+  .dnt-fb-fixed:hover {
+    transform: scale(1.02);
+  }
+  .dnt-fb-drag-handle {
+    position: absolute;
+    top: 4px;
+    width: 16px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 2px;
+    opacity: 0.6;
+  }
+  .dnt-fb-fixed .dnt-fb-drag-handle {
+    display: none;
+  }
+  .dnt-fb-icon {
+    color: #fff;
+    line-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .dnt-fb-tip {
+    position: absolute;
+    bottom: ${SIZE + 8}px;
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 500;
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  .dnt-fb:hover .dnt-fb-tip {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .dnt-fb-dragging .dnt-fb-tip {
+    display: none;
+  }
   `;
   document.head.appendChild(s);
 }
@@ -145,32 +224,67 @@ function onMouseDown(ev: MouseEvent) {
   dragging = !fixed;
   const rect = rootEl.getBoundingClientRect();
   dragStart = { x: ev.clientX, y: ev.clientY, left: rect.left, top: rect.top };
+
+  if (dragging) {
+    rootEl.classList.add('dnt-fb-dragging');
+    rootEl.style.cursor = 'grabbing';
+  }
 }
+
 function onMouseMove(ev: MouseEvent) {
   if (!rootEl || !dragging || !dragStart) return;
-  const dx = ev.clientX - dragStart.x;
-  const dy = ev.clientY - dragStart.y;
-  // 移动过程中立即更新像素位置（但比值在 mouseup 时保存）
-  const left = clamp(dragStart.left + dx, MARGIN, window.innerWidth - SIZE - MARGIN);
-  const top = clamp(dragStart.top + dy, MARGIN, window.innerHeight - SIZE - MARGIN);
-  rootEl.style.left = `${left}px`;
-  rootEl.style.top = `${top}px`;
+
+  // 使用 requestAnimationFrame 优化性能，确保流畅拖动
+  if (rafId !== null) {
+    cancelAnimationFrame(rafId);
+  }
+
+  rafId = requestAnimationFrame(() => {
+    if (!rootEl || !dragStart) return;
+
+    const dx = ev.clientX - dragStart.x;
+    const dy = ev.clientY - dragStart.y;
+
+    // 移动过程中立即更新像素位置（鼠标到哪，悬浮球就到哪）
+    const left = clamp(dragStart.left + dx, MARGIN, window.innerWidth - SIZE - MARGIN);
+    const top = clamp(dragStart.top + dy, MARGIN, window.innerHeight - SIZE - MARGIN);
+
+    rootEl.style.left = `${left}px`;
+    rootEl.style.top = `${top}px`;
+
+    rafId = null;
+  });
 }
+
 async function onMouseUp(ev: MouseEvent) {
   if (!rootEl) return;
   if (!dragStart) return;
+
+  // 清理可能残留的 RAF
+  if (rafId !== null) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+
+  rootEl.classList.remove('dnt-fb-dragging');
+  rootEl.style.cursor = fixed ? 'default' : 'pointer';
+
   const dx = Math.abs(ev.clientX - dragStart.x);
   const dy = Math.abs(ev.clientY - dragStart.y);
   const wasDragging = dragging && (dx > DRAG_THRESHOLD || dy > DRAG_THRESHOLD);
+
   dragging = false;
+
   if (wasDragging) {
-  const rect = rootEl.getBoundingClientRect();
-  // 保存为视口比例
-  const xRatio = (rect.left + SIZE / 2) / window.innerWidth;
-  const yRatio = (rect.top + SIZE / 2) / window.innerHeight;
-  await setFloatBallPos({ xRatio, yRatio });
+    const rect = rootEl.getBoundingClientRect();
+    // 保存为视口比例
+    const xRatio = (rect.left + SIZE / 2) / window.innerWidth;
+    const yRatio = (rect.top + SIZE / 2) / window.innerHeight;
+    await setFloatBallPos({ xRatio, yRatio });
   }
+
   dragStart = null;
+
   if (!wasDragging) {
     // 作为点击处理（避免与拖动混淆）
     await cycleMode();
@@ -207,6 +321,11 @@ function createRoot(): HTMLDivElement {
   el.id = 'dnt-float-ball';
   el.className = `dnt-fb ${getThemeClass()}`;
   el.setAttribute('aria-label', '后台打开切换');
+
+  // 拖动手柄
+  const dragHandle = document.createElement('div');
+  dragHandle.className = 'dnt-fb-drag-handle';
+  el.appendChild(dragHandle);
 
   const icon = document.createElement('div');
   icon.className = 'dnt-fb-icon';

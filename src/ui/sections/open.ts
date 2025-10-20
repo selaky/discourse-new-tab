@@ -1,4 +1,4 @@
-// 链接打开方式：后台打开新标签页
+// 后台打开设置界面 - 全新UI设计
 
 import { t } from '../i18n';
 import { getBackgroundOpenMode, setBackgroundOpenMode, type BackgroundOpenMode } from '../../storage/openMode';
@@ -10,160 +10,223 @@ export function renderOpenSection(): HTMLElement {
   const section = document.createElement('div');
   section.className = 'dnt-section';
 
+  // 标题
   const title = document.createElement('h3');
   title.className = 'dnt-section-title';
   title.textContent = t('settings.openMode.title');
   section.appendChild(title);
 
-  const block = document.createElement('div');
-  block.className = 'dnt-list-block';
+  // 说明文本区域
+  const infoBox = createInfoBox(t('settings.openMode.description'));
+  section.appendChild(infoBox);
 
-  const row = document.createElement('div');
-  row.className = 'dnt-input-row';
+  // 默认模式 - 分段控制器
+  const modeBlock = document.createElement('div');
+  modeBlock.className = 'dnt-list-block';
+  modeBlock.style.marginTop = '16px';
 
-  const label = document.createElement('label');
-  label.className = 'dnt-rule-label';
-  label.style.flex = '0 0 auto';
-  label.textContent = t('settings.openMode.selectLabel');
-  row.appendChild(label);
+  const modeLabel = document.createElement('div');
+  modeLabel.className = 'dnt-list-subtitle';
+  modeLabel.textContent = t('settings.openMode.selectLabel');
+  modeBlock.appendChild(modeLabel);
 
-  const select = document.createElement('select');
-  select.className = 'dnt-input';
-  select.style.maxWidth = '260px';
+  const segmentedControl = createSegmentedControl();
+  modeBlock.appendChild(segmentedControl);
 
-  const options: Array<{ value: BackgroundOpenMode; text: string }> = [
-    { value: 'none', text: t('settings.openMode.options.none') },
-    { value: 'topic', text: t('settings.openMode.options.topic') },
-    { value: 'all', text: t('settings.openMode.options.all') },
-  ];
-  for (const opt of options) {
-    const o = document.createElement('option');
-    o.value = opt.value;
-    o.textContent = opt.text;
-    select.appendChild(o);
-  }
+  section.appendChild(modeBlock);
 
-  (async () => {
-    const mode = await getBackgroundOpenMode();
-    select.value = mode;
-  })();
+  // 悬浮球设置区域
+  const floatballBlock = document.createElement('div');
+  floatballBlock.className = 'dnt-list-block';
+  floatballBlock.style.marginTop = '16px';
 
-  select.addEventListener('change', async () => {
-    const val = (select.value as BackgroundOpenMode);
-    await setBackgroundOpenMode(val);
-    await syncCurrentModeFromStorage();
-    await logBgModeChange(val, 'settings');
-  });
+  const fbTitle = document.createElement('div');
+  fbTitle.className = 'dnt-list-subtitle';
+  fbTitle.textContent = t('settings.openMode.floatball.title');
+  floatballBlock.appendChild(fbTitle);
 
-  row.appendChild(select);
-  block.appendChild(row);
-  section.appendChild(block);
+  // 显示悬浮球开关
+  const showRow = createToggleRow(
+    t('settings.openMode.floatball.show'),
+    t('settings.openMode.floatball.showDesc'),
+    false,
+    async (on) => {
+      await setFloatBallShown(on);
+    }
+  );
+  floatballBlock.appendChild(showRow.row);
 
-  // —— 悬浮球控制 ——
-  const fb = document.createElement('div');
-  fb.className = 'dnt-list-block';
+  // 固定位置开关
+  const fixedRow = createToggleRow(
+    t('settings.openMode.floatball.fixed'),
+    t('settings.openMode.floatball.fixedDesc'),
+    false,
+    async (on) => {
+      await setFloatBallFixedMode(on);
+    }
+  );
+  floatballBlock.appendChild(fixedRow.row);
 
-  // 显示/隐藏
-  const rowShow = document.createElement('div');
-  rowShow.className = 'dnt-rule-item';
-  const labelShow = document.createElement('label');
-  labelShow.className = 'dnt-rule-label';
-  labelShow.textContent = t('settings.openMode.floatball.show');
-  const toggleShow = createToggle(false, async (on) => {
-    await setFloatBallShown(on);
-  });
-  rowShow.appendChild(labelShow);
-  rowShow.appendChild(toggleShow);
-  fb.appendChild(rowShow);
-
-  // 固定位置
-  const rowFix = document.createElement('div');
-  rowFix.className = 'dnt-rule-item';
-  const labelFix = document.createElement('label');
-  labelFix.className = 'dnt-rule-label';
-  labelFix.textContent = t('settings.openMode.floatball.fixed');
-  const toggleFix = createToggle(false, async (on) => {
-    await setFloatBallFixedMode(on);
-  });
-  rowFix.appendChild(labelFix);
-  rowFix.appendChild(toggleFix);
-  fb.appendChild(rowFix);
-
-  // 重置位置
-  const rowReset = document.createElement('div');
-  rowReset.className = 'dnt-input-row';
-  const btnReset = document.createElement('button');
-  btnReset.className = 'dnt-btn dnt-btn-secondary';
-  btnReset.textContent = t('settings.openMode.floatball.reset');
-  btnReset.addEventListener('click', async () => {
+  // 重置位置按钮
+  const resetRow = document.createElement('div');
+  resetRow.style.marginTop = '12px';
+  const resetBtn = document.createElement('button');
+  resetBtn.className = 'dnt-btn dnt-btn-secondary';
+  resetBtn.textContent = t('settings.openMode.floatball.reset');
+  resetBtn.addEventListener('click', async () => {
     await resetFloatBallPosition();
   });
-  rowReset.appendChild(btnReset);
-  fb.appendChild(rowReset);
+  resetRow.appendChild(resetBtn);
+  floatballBlock.appendChild(resetRow);
 
-  // 可切换的类型（至少 2 项）
-  const rowModes = document.createElement('div');
-  rowModes.className = 'dnt-input-row';
-  const modeLabel = document.createElement('label');
-  modeLabel.className = 'dnt-rule-label';
-  modeLabel.style.flex = '0 0 auto';
-  modeLabel.textContent = t('settings.openMode.floatball.modes');
-  rowModes.appendChild(modeLabel);
+  // 可切换模式 - 卡片选择器
+  const modesLabel = document.createElement('div');
+  modesLabel.className = 'dnt-subsection-label';
+  modesLabel.textContent = t('settings.openMode.floatball.modes');
+  modesLabel.style.marginTop = '20px';
+  modesLabel.style.marginBottom = '8px';
+  floatballBlock.appendChild(modesLabel);
 
-  const boxWrap = document.createElement('div');
-  boxWrap.style.display = 'flex';
-  boxWrap.style.gap = '12px';
-  const cbNone = createCheckbox(t('settings.openMode.options.none'));
-  const cbTopic = createCheckbox(t('settings.openMode.options.topic'));
-  const cbAll = createCheckbox(t('settings.openMode.options.all'));
-  cbNone.input.setAttribute('data-mode', 'none');
-  cbTopic.input.setAttribute('data-mode', 'topic');
-  cbAll.input.setAttribute('data-mode', 'all');
-  boxWrap.appendChild(cbNone.wrap);
-  boxWrap.appendChild(cbTopic.wrap);
-  boxWrap.appendChild(cbAll.wrap);
-  rowModes.appendChild(boxWrap);
-  fb.appendChild(rowModes);
+  const modesDesc = document.createElement('div');
+  modesDesc.className = 'dnt-hint-text';
+  modesDesc.textContent = t('settings.openMode.floatball.modesDesc');
+  modesDesc.style.marginBottom = '12px';
+  floatballBlock.appendChild(modesDesc);
 
-  // 初始值回填
+  const modeCards = createModeCardSelector();
+  floatballBlock.appendChild(modeCards.container);
+
+  section.appendChild(floatballBlock);
+
+  // 初始化数据回填
   (async () => {
-    setToggleVisual(toggleShow, await getFloatBallEnabled());
-    setToggleVisual(toggleFix, await getFloatBallFixed());
-    const am = await getAllowedModes();
-    cbNone.input.checked = !!am.none;
-    cbTopic.input.checked = !!am.topic;
-    cbAll.input.checked = !!am.all;
+    const mode = await getBackgroundOpenMode();
+    const enabled = await getFloatBallEnabled();
+    const fixed = await getFloatBallFixed();
+    const allowed = await getAllowedModes();
+
+    setSegmentedValue(segmentedControl, mode);
+    setToggleVisual(showRow.toggle, enabled);
+    setToggleVisual(fixedRow.toggle, fixed);
+    setModeCardsValue(modeCards, allowed);
   })();
-
-  // 变更逻辑：至少保持两项为 true
-  const onCheckbox = async (e?: Event) => {
-    const next = {
-      none: cbNone.input.checked,
-      topic: cbTopic.input.checked,
-      all: cbAll.input.checked,
-    };
-    const count = (next.none?1:0) + (next.topic?1:0) + (next.all?1:0);
-    if (count < 2) {
-      // 自动回滚当前操作（保持上一次状态）
-      const target = (e?.target as HTMLInputElement | undefined);
-      if (target) target.checked = !target.checked;
-      return;
-    }
-    await setAllowedModes(next);
-    await updateAllowedModes(next);
-  };
-  cbNone.input.addEventListener('change', onCheckbox);
-  cbTopic.input.addEventListener('change', onCheckbox);
-  cbAll.input.addEventListener('change', onCheckbox);
-
-  section.appendChild(fb);
 
   return section;
 }
 
+// 创建信息提示框
+function createInfoBox(text: string): HTMLElement {
+  const box = document.createElement('div');
+  box.className = 'dnt-info-box';
+
+  const icon = document.createElement('span');
+  icon.className = 'dnt-info-icon';
+  icon.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="10"></circle>
+    <line x1="12" y1="16" x2="12" y2="12"></line>
+    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+  </svg>`;
+  box.appendChild(icon);
+
+  const textEl = document.createElement('span');
+  textEl.className = 'dnt-info-text';
+  textEl.textContent = text;
+  box.appendChild(textEl);
+
+  return box;
+}
+
+// 创建分段控制器
+function createSegmentedControl(): HTMLElement {
+  const container = document.createElement('div');
+  container.className = 'dnt-segmented-control';
+  container.setAttribute('role', 'radiogroup');
+  container.setAttribute('aria-label', t('settings.openMode.selectLabel'));
+
+  const modes: BackgroundOpenMode[] = ['none', 'topic', 'all'];
+
+  modes.forEach((mode, index) => {
+    const button = document.createElement('button');
+    button.className = 'dnt-segment-btn';
+    button.setAttribute('role', 'radio');
+    button.setAttribute('aria-checked', 'false');
+    button.setAttribute('data-mode', mode);
+
+    const label = document.createElement('span');
+    label.className = 'dnt-segment-label';
+    label.textContent = t(`settings.openMode.options.${mode}`);
+    button.appendChild(label);
+
+    const desc = document.createElement('span');
+    desc.className = 'dnt-segment-desc';
+    desc.textContent = t(`settings.openMode.optionDesc.${mode}`);
+    button.appendChild(desc);
+
+    button.addEventListener('click', async () => {
+      await setBackgroundOpenMode(mode);
+      await syncCurrentModeFromStorage();
+      await logBgModeChange(mode, 'settings');
+      setSegmentedValue(container, mode);
+    });
+
+    container.appendChild(button);
+  });
+
+  return container;
+}
+
+// 设置分段控制器的选中值
+function setSegmentedValue(container: HTMLElement, mode: BackgroundOpenMode) {
+  const buttons = container.querySelectorAll('.dnt-segment-btn');
+  buttons.forEach((btn) => {
+    const isActive = btn.getAttribute('data-mode') === mode;
+    if (isActive) {
+      btn.classList.add('dnt-segment-active');
+      btn.setAttribute('aria-checked', 'true');
+    } else {
+      btn.classList.remove('dnt-segment-active');
+      btn.setAttribute('aria-checked', 'false');
+    }
+  });
+}
+
+// 创建开关行
+function createToggleRow(
+  label: string,
+  description: string,
+  initial: boolean,
+  onChange: (on: boolean) => void | Promise<void>
+): { row: HTMLElement; toggle: HTMLElement } {
+  const row = document.createElement('div');
+  row.className = 'dnt-toggle-row';
+
+  const labelWrap = document.createElement('div');
+  labelWrap.className = 'dnt-toggle-label-wrap';
+
+  const labelEl = document.createElement('div');
+  labelEl.className = 'dnt-toggle-label';
+  labelEl.textContent = label;
+  labelWrap.appendChild(labelEl);
+
+  const descEl = document.createElement('div');
+  descEl.className = 'dnt-toggle-desc';
+  descEl.textContent = description;
+  labelWrap.appendChild(descEl);
+
+  row.appendChild(labelWrap);
+
+  const toggle = createToggle(initial, onChange);
+  row.appendChild(toggle);
+
+  return { row, toggle };
+}
+
+// 创建开关组件
 function createToggle(initial: boolean, onChange: (on: boolean) => void | Promise<void>): HTMLElement {
   const toggle = document.createElement('div');
   toggle.className = `dnt-toggle ${initial ? 'dnt-toggle-on' : 'dnt-toggle-off'}`;
+  toggle.setAttribute('role', 'switch');
+  toggle.setAttribute('aria-checked', initial ? 'true' : 'false');
 
   const track = document.createElement('div');
   track.className = 'dnt-toggle-track';
@@ -184,22 +247,156 @@ function createToggle(initial: boolean, onChange: (on: boolean) => void | Promis
   return toggle;
 }
 
+// 设置开关的视觉状态
 function setToggleVisual(el: HTMLElement, on: boolean) {
   el.classList.remove('dnt-toggle-on', 'dnt-toggle-off');
   el.classList.add(on ? 'dnt-toggle-on' : 'dnt-toggle-off');
+  el.setAttribute('aria-checked', on ? 'true' : 'false');
 }
 
-function createCheckbox(label: string): { wrap: HTMLElement; input: HTMLInputElement } {
-  const wrap = document.createElement('label');
-  wrap.style.display = 'inline-flex';
-  wrap.style.alignItems = 'center';
-  wrap.style.gap = '6px';
-  const input = document.createElement('input');
-  input.type = 'checkbox';
-  const span = document.createElement('span');
-  span.textContent = label;
-  wrap.appendChild(input);
-  wrap.appendChild(span);
-  return { wrap, input };
+// 创建模式卡片选择器
+function createModeCardSelector(): { container: HTMLElement; cards: Array<{ el: HTMLElement; mode: BackgroundOpenMode; checkbox: HTMLInputElement }> } {
+  const container = document.createElement('div');
+  container.className = 'dnt-mode-cards';
+  container.setAttribute('role', 'group');
+  container.setAttribute('aria-label', t('settings.openMode.floatball.modes'));
+
+  const modes: BackgroundOpenMode[] = ['none', 'topic', 'all'];
+  const cards: Array<{ el: HTMLElement; mode: BackgroundOpenMode; checkbox: HTMLInputElement }> = [];
+
+  modes.forEach((mode) => {
+    const card = document.createElement('label');
+    card.className = 'dnt-mode-card';
+    card.setAttribute('data-mode', mode);
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'dnt-mode-card-checkbox';
+    checkbox.setAttribute('data-mode', mode);
+    card.appendChild(checkbox);
+
+    const content = document.createElement('div');
+    content.className = 'dnt-mode-card-content';
+
+    const icon = document.createElement('div');
+    icon.className = 'dnt-mode-card-icon';
+    icon.innerHTML = getModeIcon(mode);
+    content.appendChild(icon);
+
+    const label = document.createElement('div');
+    label.className = 'dnt-mode-card-label';
+    label.textContent = t(`settings.openMode.options.${mode}`);
+    content.appendChild(label);
+
+    const desc = document.createElement('div');
+    desc.className = 'dnt-mode-card-desc';
+    desc.textContent = t(`settings.openMode.optionDesc.${mode}`);
+    content.appendChild(desc);
+
+    const checkmark = document.createElement('div');
+    checkmark.className = 'dnt-mode-card-checkmark';
+    checkmark.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>`;
+    content.appendChild(checkmark);
+
+    card.appendChild(content);
+    container.appendChild(card);
+
+    cards.push({ el: card, mode, checkbox });
+  });
+
+  // 处理选择逻辑
+  const updateCards = async () => {
+    const selected = cards.filter(c => c.checkbox.checked);
+    const count = selected.length;
+
+    // 至少保留2个选项
+    cards.forEach(c => {
+      const isLastTwo = count === 2 && c.checkbox.checked;
+      if (isLastTwo) {
+        c.el.classList.add('dnt-mode-card-min-required');
+        c.el.title = t('settings.openMode.floatball.modesDesc');
+      } else {
+        c.el.classList.remove('dnt-mode-card-min-required');
+        c.el.title = '';
+      }
+
+      if (c.checkbox.checked) {
+        c.el.classList.add('dnt-mode-card-checked');
+      } else {
+        c.el.classList.remove('dnt-mode-card-checked');
+      }
+    });
+
+    // 保存到存储
+    const allowedModes = {
+      none: cards.find(c => c.mode === 'none')!.checkbox.checked,
+      topic: cards.find(c => c.mode === 'topic')!.checkbox.checked,
+      all: cards.find(c => c.mode === 'all')!.checkbox.checked,
+    };
+    await setAllowedModes(allowedModes);
+    await updateAllowedModes(allowedModes);
+  };
+
+  cards.forEach(c => {
+    c.checkbox.addEventListener('change', async (e) => {
+      const selected = cards.filter(card => card.checkbox.checked);
+
+      // 如果尝试取消选择且只剩2个,则阻止
+      if (!c.checkbox.checked && selected.length < 2) {
+        c.checkbox.checked = true;
+        e.preventDefault();
+        return;
+      }
+
+      await updateCards();
+    });
+  });
+
+  return { container, cards };
 }
 
+// 设置卡片选择器的值
+function setModeCardsValue(
+  modeCards: { container: HTMLElement; cards: Array<{ el: HTMLElement; mode: BackgroundOpenMode; checkbox: HTMLInputElement }> },
+  allowed: Record<BackgroundOpenMode, boolean>
+) {
+  modeCards.cards.forEach(c => {
+    c.checkbox.checked = allowed[c.mode];
+    if (c.checkbox.checked) {
+      c.el.classList.add('dnt-mode-card-checked');
+    } else {
+      c.el.classList.remove('dnt-mode-card-checked');
+    }
+  });
+
+  // 检查是否需要标记最小要求
+  const selected = modeCards.cards.filter(c => c.checkbox.checked);
+  if (selected.length === 2) {
+    selected.forEach(c => {
+      c.el.classList.add('dnt-mode-card-min-required');
+      c.el.title = t('settings.openMode.floatball.modesDesc');
+    });
+  }
+}
+
+// 获取模式图标
+function getModeIcon(mode: BackgroundOpenMode): string {
+  const icons: Record<BackgroundOpenMode, string> = {
+    none: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+      <circle cx="12" cy="12" r="3"></circle>
+    </svg>`,
+    topic: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>`,
+    all: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="3" width="7" height="7"></rect>
+      <rect x="14" y="3" width="7" height="7"></rect>
+      <rect x="14" y="14" width="7" height="7"></rect>
+      <rect x="3" y="14" width="7" height="7"></rect>
+    </svg>`,
+  };
+  return icons[mode];
+}
