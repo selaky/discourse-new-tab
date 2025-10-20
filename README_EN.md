@@ -66,7 +66,7 @@ The settings interface is aesthetically pleasing, supports dark mode and languag
 - 🎨 **Beautiful Interface** - Settings interface supports light/dark/auto night mode
 - 🌍 **Multi-Language** - Supports Chinese and English interface switching
 - ⚡ **Ultimate Performance** - No perceptible difference in browsing experience before and after installation
-- 🧩 **Background Open Option** - Optionally open "new tabs" in background (None/Topics/All)
+- 🧩 **Background Open Option** - Optionally open "new tabs" in background (None/Topics/All), with floating ball for quick switching
 
 ## Installation
 
@@ -140,7 +140,17 @@ All rules can be independently enabled or disabled in the settings interface. Th
 
 ## Settings Preview
 
-![Settings Interface](screenshots/settings1.0.0.png)
+### Forum Recognition
+
+![Forum Recognition](screenshots/setting 1.2.0 Forum Recognition.png)
+
+### Navigation Rules
+
+![Navigation Rules](screenshots/setting 1.2.0 Navigation Rules.png)
+
+### Background Open
+
+![Background Open](screenshots/setting 1.2.0 Background Open.png)
 
 Settings interface features:
 
@@ -148,6 +158,7 @@ Settings interface features:
 - ✅ **Whitelist Management** - Manually add domains to force-enable the script
 - 🚫 **Blacklist Management** - Manually add domains to force-disable the script
 - 🔄 **One-Click Add Current Domain** - Quickly add the currently visited site to whitelist or blacklist
+- 🧩 **Background Open Configuration** - Choose how new tabs open (None/Topics/All), with floating ball for quick switching
 - ⚙️ **Navigation Rules Configuration** - Independent switches for all rules to meet personalized needs
 - 🐛 **Debug Mode** - Enable to output detailed debugging information in the console for troubleshooting
 - 🎨 **Theme Switching** - Light/Dark/Auto mode
