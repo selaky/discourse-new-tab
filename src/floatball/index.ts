@@ -45,7 +45,7 @@ const DRAG_THRESHOLD = 5;
 const SIZE = 44;
 const MARGIN = 8;
 
-// 图标（简易占位，后续可由 UI 优化）
+// 图标
 const Icons: Record<BackgroundOpenMode, string> = {
   none: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8" /></svg>`,
   topic: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h10M4 17h16"/></svg>`,
