@@ -4,7 +4,7 @@ import { evaluateRules } from '../decision/engine';
 import type { LinkContext } from '../decision/types';
 import { getAllRules } from '../rules';
 import { toAbsoluteUrl } from '../utils/url';
-import { logClickFilter, logFinalDecision, logLinkInfo, logBackgroundOpenApplied, logError } from '../debug/logger';
+import { logClickFilter, logFinalDecision, logLinkInfo, logBackgroundOpenApplied, logError, logClickNote } from '../debug/logger';
 import { isInSearchResults, resolveSearchResultLink } from '../utils/dom';
 import { getBackgroundOpenMode } from '../storage/openMode';
 import { openNewTabBackground, openNewTabForeground } from '../utils/open';
@@ -26,6 +26,46 @@ function findAnchor(el: EventTarget | null): HTMLAnchorElement | null {
   return null;
 }
 
+// 在部分站点（主题行/标题行可点击）中，从“空白可点击区域”推断出对应的主题链接
+// 规则（尽量保守，避免在“空白不可点击”的站点误触发）：
+// 1) 仅当点击发生在主题列表行（.topic-list-item）内
+// 2) 且所在的“标题行容器/主单元格”存在明显可点击信号：cursor: pointer
+// 3) 成功找到同容器内的 a.raw-topic-link（且可见）
+function resolveTopicAnchorFromBlankClick(target: EventTarget | null): HTMLAnchorElement | null {
+  const el = target as Element | null;
+  if (!el) return null;
+
+  // 限定在主题列表行
+  const row = el.closest?.('tr.topic-list-item, .topic-list-item') as HTMLElement | null;
+  if (!row) return null;
+
+  // 标题所在的主单元格/标题行
+  const titleCell = (el.closest?.('td.main-link, .main-link') || row.querySelector?.('td.main-link, .main-link')) as HTMLElement | null;
+  if (!titleCell) return null;
+
+  // 更窄范围：标题行容器（若存在）
+  const titleLine = (el.closest?.('.link-top-line') || titleCell.querySelector?.('.link-top-line')) as HTMLElement | null;
+
+  // 判定“可点击”信号：cursor: pointer（优先检查更近的容器）
+  const isPointer = (node: HTMLElement | null) => {
+    if (!node) return false;
+    try { return getComputedStyle(node).cursor === 'pointer'; } catch { return false; }
+  };
+  const clickable = isPointer(el as HTMLElement) || isPointer(titleLine) || isPointer(titleCell) || isPointer(row);
+  if (!clickable) return null; // 保守：未检测到可点击信号则不处理
+
+  // 查找主题链接（优先 raw-topic-link）
+  const a = (titleCell.querySelector?.('a.raw-topic-link, a.raw-link.raw-topic-link')
+    || row.querySelector?.('a.raw-topic-link, a.raw-link.raw-topic-link')) as HTMLAnchorElement | null;
+  if (!a) return null;
+
+  // 可见性检查（避免被隐藏元素干扰）
+  const visible = !!(a.offsetParent || (a.getClientRects?.().length ?? 0) > 0);
+  if (!visible) return null;
+
+  return a;
+}
+
 export function attachClickListener(label: string = '[discourse-new-tab]') {
   const handler = async (ev: MouseEvent) => {
     try {
@@ -34,8 +74,18 @@ export function attachClickListener(label: string = '[discourse-new-tab]') {
         return; // 尊重 Ctrl/Meta/中键等用户意图
       }
 
-      const a = findAnchor(ev.target);
-      if (!a) { await logClickFilter('未找到 <a> 元素'); return; }
+      let a = findAnchor(ev.target);
+      if (!a) {
+        // 兼容：部分站点允许点击标题行（非 <a>）打开主题
+        const inferred = resolveTopicAnchorFromBlankClick(ev.target);
+        if (inferred) {
+          a = inferred;
+          await logClickNote('空白标题区域点击：推断为主题链接');
+        } else {
+          await logClickFilter('未找到 <a> 元素');
+          return;
+        }
+      }
       // 容错：搜索结果弹窗中可能存在无 href 的 <a>，通过 data-xxx 或 topic id 推断 URL
       let rawHref = a.getAttribute('href') || a.href || '';
       if (!rawHref || rawHref === '#') {

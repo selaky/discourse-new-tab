@@ -32,6 +32,12 @@ export async function logClickFilter(reason: string) {
   console.log(`${DEBUG_LABEL} 点击事件忽略：${reason}`);
 }
 
+// 点击调试备注（用于空白区域推断等非忽略类提示）
+export async function logClickNote(note: string) {
+  if (!(await shouldLog('click'))) return;
+  console.log(`${DEBUG_LABEL} 点击：${note}`);
+}
+
 // 链接信息（仅输出已由现有工具解析/可直接读取的信息）
 export async function logLinkInfo(ctx: LinkContext) {
   if (!(await shouldLog('link'))) return;
