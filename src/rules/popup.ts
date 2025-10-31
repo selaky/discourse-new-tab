@@ -5,6 +5,7 @@ import {
   RULE_POPUP_USER_CARD,
   RULE_POPUP_USER_MENU,
   RULE_POPUP_SEARCH_MENU,
+  RULE_POPUP_CHAT_WINDOW,
 } from '../storage/settings';
 import {
   isActiveTab,
@@ -16,6 +17,8 @@ import {
   isInSearchResults,
   isSearchResultMoreLink,
   isSearchResultTopicLink,
+  isChatHeaderTrigger,
+  isChatLink,
 } from '../utils/dom';
 
 // ——— 用户卡片 ———
@@ -122,6 +125,24 @@ const ruleUserMenuContentNewTab: Rule = {
   },
 };
 
+// —— 聊天窗口 ——
+// 启用：保留原生聊天弹窗/抽屉；关闭：改为新标签页打开 /chat
+const ruleChatWindow: Rule = {
+  id: RULE_POPUP_CHAT_WINDOW,
+  name: '聊天窗口原生弹窗打开',
+  enabledAction: 'keep_native',
+  disabledAction: 'new_tab',
+  match: (ctx): MatchResult => {
+    const a = ctx.anchor;
+    if (!a) return null;
+    // 头部聊天按钮或任意指向 /chat 的链接
+    if (isChatHeaderTrigger(a) || isChatLink(a)) {
+      return { matched: true, note: '聊天弹窗/链接' };
+    }
+    return null;
+  },
+};
+
 export const popupRules: Rule[] = [
   // 用户卡片（触发→保留；卡片内→新标签）
   ruleUserCardTriggerKeepNative,
@@ -131,7 +152,9 @@ export const popupRules: Rule[] = [
   ruleUserMenuNavKeepOrNew,
   ruleUserMenuNavActiveNewTab,
   ruleUserMenuContentNewTab,
-  // 搜索弹窗（结果列表与底部“更多”按钮 → 新标签；其余保持原生）
+  // 聊天窗口（启用=保留原生；关闭=新标签页）
+  ruleChatWindow,
+    // 搜索弹窗（结果列表与底部“更多”按钮 → 新标签；其余保持原生）
   // 说明：搜索历史、建议项等（不在结果区内）一律不改写。
   {
     id: RULE_POPUP_SEARCH_MENU,

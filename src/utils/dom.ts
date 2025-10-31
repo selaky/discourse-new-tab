@@ -203,3 +203,42 @@ export function resolveSearchResultLink(a: HTMLAnchorElement): string | null {
   return null;
 }
 
+
+// —— 聊天（Chat）——
+// 识别聊天触发与聊天链接：
+// - 头部聊天按钮：位于 Header，父级 li 或自身类名通常包含 chat-header-icon，或包含 d-chat 图标
+// - 任意指向 /chat 或 /chat/... 的链接
+export function isChatHeaderTrigger(a: HTMLAnchorElement): boolean {
+  if (!a) return false;
+  if (!isInHeader(a)) return false;
+  const li = a.closest?.('li');
+  const cls = `${(a.className || '').toString()} ${(li?.className || '').toString()}`.toLowerCase();
+  if (cls.includes('chat-header-icon')) return true;
+  // 图标/标题文案线索
+  const hasIcon = !!a.querySelector?.('.d-icon-d-chat, .d-icon.d-icon-d-chat, svg.d-icon-d-chat');
+  if (hasIcon) return true;
+  const title = (a.getAttribute('title') || '').toLowerCase();
+  if (/\bchat\b|聊天/.test(title)) return true;
+  // href 提示
+  try {
+    const href = a.getAttribute('href') || a.href || '';
+    const url = new URL(href, location.href);
+    if (url.pathname === '/chat' || url.pathname.startsWith('/chat/')) return true;
+  } catch (err) {
+    void logError('link', '解析聊天触发链接失败', err);
+  }
+  return false;
+}
+
+export function isChatLink(a: HTMLAnchorElement): boolean {
+  if (!a) return false;
+  try {
+    const href = a.getAttribute('href') || a.href || '';
+    const url = new URL(href, location.href);
+    return url.pathname === '/chat' || url.pathname.startsWith('/chat/');
+  } catch (err) {
+    void logError('link', '解析聊天链接失败', err);
+    return false;
+  }
+}
+

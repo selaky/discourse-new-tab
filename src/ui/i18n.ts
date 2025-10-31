@@ -88,6 +88,8 @@ const translations: Record<Language, Record<string, any>> = {
           userMenu: '用户菜单内链接用新标签页打开',
           // 新增：搜索框结果与“更多”按钮
           searchMenu: '搜索框链接用新标签页打开',
+          // 新增：聊天窗口
+          chatWindowNative: '聊天窗口使用原生弹窗打开',
         },
         sidebar: {
           title: '侧边栏',
@@ -205,6 +207,8 @@ const translations: Record<Language, Record<string, any>> = {
           userMenu: 'Open user menu links in new tab',
           // New: search popup results and "more" button
           searchMenu: 'Open search box links in new tab',
+          // New: chat window
+          chatWindowNative: 'Open chat window in native popup',
         },
         sidebar: {
           title: 'Sidebar',

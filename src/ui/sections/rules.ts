@@ -11,6 +11,7 @@ import {
   RULE_POPUP_USER_CARD,
   RULE_POPUP_USER_MENU,
   RULE_POPUP_SEARCH_MENU,
+  RULE_POPUP_CHAT_WINDOW,
   RULE_SIDEBAR_NON_TOPIC_KEEP_NATIVE,
   RULE_SIDEBAR_IN_TOPIC_NEW_TAB,
 } from '../../storage/settings';
@@ -48,6 +49,7 @@ const RULE_GROUPS: RuleGroup[] = [
       { id: RULE_POPUP_USER_CARD, label: 'settings.rules.popup.userCard' },
       { id: RULE_POPUP_USER_MENU, label: 'settings.rules.popup.userMenu' },
       { id: RULE_POPUP_SEARCH_MENU, label: 'settings.rules.popup.searchMenu' },
+      { id: RULE_POPUP_CHAT_WINDOW, label: 'settings.rules.popup.chatWindowNative' },
     ],
   },
   {

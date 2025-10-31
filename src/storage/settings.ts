@@ -14,11 +14,13 @@ export const RULE_USER_SAME_PROFILE_KEEP_NATIVE = 'user:same-profile-keep-native
 
 // 附件规则
 export const RULE_ATTACHMENT_KEEP_NATIVE = 'attachment:keep-native';
-// 弹窗规则（两个大项）
+// 弹窗规则
 export const RULE_POPUP_USER_CARD = 'popup:user-card';
 export const RULE_POPUP_USER_MENU = 'popup:user-menu';
 // 搜索弹窗（结果列表与“更多”按钮）
 export const RULE_POPUP_SEARCH_MENU = 'popup:search-menu-results';
+// 聊天窗口
+export const RULE_POPUP_CHAT_WINDOW = 'popup:chat-window-native';
 
 // 侧边栏规则
 export const RULE_SIDEBAR_NON_TOPIC_KEEP_NATIVE = 'sidebar:non-topic-keep-native';
@@ -36,6 +38,7 @@ const DEFAULTS: Record<string, boolean> = {
   [RULE_POPUP_USER_CARD]: true,
   [RULE_POPUP_USER_MENU]: true,
   [RULE_POPUP_SEARCH_MENU]: true,
+  [RULE_POPUP_CHAT_WINDOW]: true,
   [RULE_SIDEBAR_NON_TOPIC_KEEP_NATIVE]: true,
   [RULE_SIDEBAR_IN_TOPIC_NEW_TAB]: true,
 };
